@@ -1,6 +1,4 @@
 # 1. tunn3l v1s10n
-
-## Description:
 > We found this file. Recover the flag.
 <br/>> **The challenge demanded that I interpret the binary of a corrupted file and fix it to accesss the image.**
 
@@ -40,8 +38,6 @@ picoCTF{qu1t3_a_v13w_2020}
   ***
 
   # 2. m00nwalk
-
-## Description:
 > Decode this message from the moon.
 <br/>> **The challenge demanded that I uncover the message hidden in the sound file.**
 ## Solution:
