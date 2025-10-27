@@ -106,3 +106,53 @@ if __name__ == "__main__":
 
 ## Resources:
 
+
+# 2. miniRSA
+
+> Let's decrypt this: [ciphertext]? Something seems a bit small.
+<br/> **>This challenge demanded that I perform calculations to decrypt the encrypted ciphertext.**
+
+
+## Solution:
+The ciphertext given (`c`) was relatively smaller than the `N` value. The `e` (e=3) value was also very small compared to the N value. This reduced the RSA encryption equation to : `m = cuberoot(c)`.This decrypted message was received in the form of a decimal number, which had to be converted into hexadecimal and then into ASCII to get the flag.
+
+I used a python code which I found online on **Stack Overflow** in order to find the cuberoot of such a large number(c).
+<br/>
+**source code in python to calculate cuberoot** :
+
+```
+def find_invpow(x, n):
+    high = 1
+    while high ** n <= x:
+        high *= 2
+    low = high // 2 
+
+    while low < high:
+        mid = (low + high) // 2
+        if low < mid and mid ** n < x:
+            low = mid
+        elif high > mid and mid ** n > x:
+            high = mid
+        else:
+            return mid
+    return mid + 1
+
+
+print(find_invpow(2205316413931134031074603746928247799030155221252519872650073010782049179856976080512716237308882294226369300412719995904064931819531456392957957122459640736424089744772221933500860936331459280832211445548332429338572369823704784625368933,3))
+
+```
+Converting hexadecimal equivalent to ASCII: 
+<img width="1920" height="824" alt="Screenshot 2025-10-26 174059" src="https://github.com/user-attachments/assets/258e24e2-f658-49ed-9666-49fce6ee95a0" />
+
+## Flag:
+```
+picocTE{n33d_a_IArg3r_e_ccaa7776}
+```
+## Concepts learnt:
+> I learnt about the special RSA case: where the `e` value is very small, the equation simplifies to a format in which we can decrypt a ciphertext by only having 3 parameters.
+> The RSA encryption formula gives answers in decimal which first needs to be converted to hexadecimal and then to ASCII to get the human-readable form of the message.
+
+## Resources:
+>[https://stackoverflow.com/questions/356090/how-to-compute-the-nth-root-of-a-very-big-integer]
+>[https://www.rapidtables.com/convert/number/decimal-to-hex.html]
+>[https://neapay.com/online-tools/hex-to-ascii-converter.html]
