@@ -141,12 +141,13 @@ def find_invpow(x, n):
 print(find_invpow(2205316413931134031074603746928247799030155221252519872650073010782049179856976080512716237308882294226369300412719995904064931819531456392957957122459640736424089744772221933500860936331459280832211445548332429338572369823704784625368933,3))
 
 ```
-Converting hexadecimal equivalent to ASCII: 
+**Converting hexadecimal equivalent to ASCII:** 
+<br/>
 <img width="1920" height="824" alt="Screenshot 2025-10-26 174059" src="https://github.com/user-attachments/assets/258e24e2-f658-49ed-9666-49fce6ee95a0" />
 
 ## Flag:
 ```
-picocTE{n33d_a_IArg3r_e_ccaa7776}
+picoCTF{n33d_a_IArg3r_e_ccaa7776}
 ```
 ## Concepts learnt:
  I learnt about the special RSA case: where the `e` value is very small, the equation simplifies to a format in which we can decrypt a ciphertext by only having 3 parameters.
