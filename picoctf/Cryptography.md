@@ -149,8 +149,9 @@ Converting hexadecimal equivalent to ASCII:
 picocTE{n33d_a_IArg3r_e_ccaa7776}
 ```
 ## Concepts learnt:
-> I learnt about the special RSA case: where the `e` value is very small, the equation simplifies to a format in which we can decrypt a ciphertext by only having 3 parameters.
-> The RSA encryption formula gives answers in decimal which first needs to be converted to hexadecimal and then to ASCII to get the human-readable form of the message.
+ I learnt about the special RSA case: where the `e` value is very small, the equation simplifies to a format in which we can decrypt a ciphertext by only having 3 parameters.
+ <br/>
+ The RSA encryption formula gives answers in decimal which first needs to be converted to hexadecimal and then to ASCII to get the human-readable form of the message.
 
 ## Resources:
 >[https://stackoverflow.com/questions/356090/how-to-compute-the-nth-root-of-a-very-big-integer]
