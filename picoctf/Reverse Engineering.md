@@ -125,7 +125,7 @@ picoCTF{jU5t_a_s1mpl3_an4gr4m_4_u_1fb380}
 - Through this challenge, I learnt how from a provided code, I can extract useful code and reverse what the code does by changing up a few things in order to get what is useful.
 - I also brushed up my skills on how to trace back steps and do operations in reverse to obtain untampered data. 
 
-# 2. ARMssembly
+# 3. ARMssembly
 
 > For what argument does this program print `win` with variables 83, 0 and 3? File: chall_1.S Flag format: picoCTF{XXXXXXXX} -> (hex, lowercase, no 0x, and 32 bits. ex. 5614267 would be picoCTF{0055aabb})
 <br/>> **This challenge demanded me to interpret an assembly code and find out the argument that prints 'You win'**
