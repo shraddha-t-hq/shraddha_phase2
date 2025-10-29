@@ -125,4 +125,50 @@ picoCTF{jU5t_a_s1mpl3_an4gr4m_4_u_1fb380}
 - Through this challenge, I learnt how from a provided code, I can extract useful code and reverse what the code does by changing up a few things in order to get what is useful.
 - I also brushed up my skills on how to trace back steps and do operations in reverse to obtain untampered data. 
 
+# 2. ARMssembly
 
+> For what argument does this program print `win` with variables 83, 0 and 3? File: chall_1.S Flag format: picoCTF{XXXXXXXX} -> (hex, lowercase, no 0x, and 32 bits. ex. 5614267 would be picoCTF{0055aabb})
+<br/>> **This challenge demanded me to interpret an assembly code and find out the argument that prints 'You win'**
+
+## Solution:
+Firstly, I tried to read the assembly code and understand what was going on. 
+I found out that through the `main` function, a user-entered argument was passed into the function `func`. The value returned by `func` was checked for equality with 0, if 0, the win statement would print.
+
+**The following is the working I did on `func` in order to get the correct return value**
+```
+func:
+	sub	sp, sp, #32
+	str	w0, [sp, 12]  ; [sp,12]=w0
+	mov	w0, 83        ; w0=83
+	str	w0, [sp, 16]  ; [sp, 16]=83
+	str	wzr, [sp, 20] ; [sp,20]=0
+	mov	w0, 3         ; w0=3
+	str	w0, [sp, 24]  ;[sp,24]=3
+	ldr	w0, [sp, 20]  ; w0=0
+	ldr	w1, [sp, 16]  ; w1=83
+	lsl	w0, w1, w0    ; w0 = w1<<w0 = 83<<0=83
+	str	w0, [sp, 28]  ; [sp,28]=83
+	ldr	w1, [sp, 28]  ;w1=83
+	ldr	w0, [sp, 24]  ; wo=3
+	sdiv	w0, w1, w0 ; w0 = w1 // w0 = 27
+	str	w0, [sp, 28] ; [sp,28] = 27
+	ldr	w1, [sp, 28] ; w1=27
+	ldr	w0, [sp, 12] ; w0=argument passed to the function
+	sub	w0, w1, w0 ; w0=w1-w0 = 27-arg
+	str	w0, [sp, 28] ; [sp,28]= 27-arg
+	ldr	w0, [sp, 28] ; w0= 27-arg
+	add	sp, sp, 32 ; 
+	ret ; return w0
+
+```
+<br/>
+
+## Flag:
+
+```
+picoCTF{0000001b}
+```
+
+## Concepts learnt:
+- To do this challenge, I learnt some important assembly language commands and their working.
+- I also learnt how control flows in an assembly code
