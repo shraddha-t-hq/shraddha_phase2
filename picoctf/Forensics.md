@@ -87,6 +87,7 @@ TFTPDOESNTENCRYPTOURTRAFFICSOWEMUSTDISGUISEOURFLAGTRANSFER.FIGUREOUTAWAYTOHIDETH
 The files had 3 images, for which I used steghide to decrypt data hidden in the image. Analysing the messages, the key for the decryption was `DUEDILIGENCE`.
 
 **Terminal Working:**
+```
 shraddhatiwari@LAPTOP-F2C51A3F:~$ cd ./flag
 shraddhatiwari@LAPTOP-F2C51A3F:~/flag$ ls
 instructions.txt  picture1.bmp  picture2.bmp  picture3.bmp  plan  program.deb
@@ -103,6 +104,7 @@ shraddhatiwari@LAPTOP-F2C51A3F:~/flag$ ls
 flag.txt  instructions.txt  picture1.bmp  picture2.bmp  picture3.bmp  plan  program.deb
 shraddhatiwari@LAPTOP-F2C51A3F:~/flag$ cat flag.txt
 picoCTF{h1dd3n_1n_pLa1n_51GHT_18375919}
+```
 
 ## Flag:
 
