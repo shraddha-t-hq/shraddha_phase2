@@ -65,3 +65,55 @@ picoCTF{beep_boop_im_in_space}
 
 ## References 
 -[https://www.youtube.com/watch?v=BlJkiMc94CI]
+
+# 3. Trivial Flag Transfer Protocol
+
+> Figure out how they moved the flag.
+<br/>> **The challenge demanded that I .**
+
+## Solution:
+I opened the given file using Wireshark and then extracted all the TFTP files. It contained `plan` and `instructions` files with encrypted sentences.
+I used an encryption identifier to identify as a ROT13 encryption. I then decrypted it using the same software. 
+The following were the messages obtained :   
+**plan :**
+```
+IUSEDTHEPROGRAMANDHIDITWITH-DUEDILIGENCE.CHECKOUTTHEPHOTOS
+```
+**instructions :**
+```
+TFTPDOESNTENCRYPTOURTRAFFICSOWEMUSTDISGUISEOURFLAGTRANSFER.FIGUREOUTAWAYTOHIDETHEFLAGANDIWILLCHECKBACKFORTHEPLAN
+```
+<br/>
+The files had 3 images, for which I used steghide to decrypt data hidden in the image. Analysing the messages, the key for the decryption was `DUEDILIGENCE`.
+
+**Terminal Working:**
+shraddhatiwari@LAPTOP-F2C51A3F:~$ cd ./flag
+shraddhatiwari@LAPTOP-F2C51A3F:~/flag$ ls
+instructions.txt  picture1.bmp  picture2.bmp  picture3.bmp  plan  program.deb
+shraddhatiwari@LAPTOP-F2C51A3F:~/flag$  steghide extract -sf picture1.bmp
+Enter passphrase:
+steghide: could not extract any data with that passphrase!
+shraddhatiwari@LAPTOP-F2C51A3F:~/flag$  steghide extract -sf picture2.bmp
+Enter passphrase:
+steghide: could not extract any data with that passphrase!
+shraddhatiwari@LAPTOP-F2C51A3F:~/flag$  steghide extract -sf picture3.bmp
+Enter passphrase:
+wrote extracted data to "flag.txt".
+shraddhatiwari@LAPTOP-F2C51A3F:~/flag$ ls
+flag.txt  instructions.txt  picture1.bmp  picture2.bmp  picture3.bmp  plan  program.deb
+shraddhatiwari@LAPTOP-F2C51A3F:~/flag$ cat flag.txt
+picoCTF{h1dd3n_1n_pLa1n_51GHT_18375919}
+
+## Flag:
+
+```
+picoCTF{h1dd3n_1n_pLa1n_51GHT_18375919}
+```
+
+## Concepts learnt:
+- I learnt about Trivial File Transfer Protocols.
+- I learnt the functioning and use of steghide to extract information from image files.
+
+  ## References
+  The following was the site I used for decryption :
+  - [https://www.dcode.fr/rot-13-cipher]
