@@ -26,26 +26,17 @@ FCSC{b1dee4eeadf6c4e60aeb142b0b486344e64b12b40d1046de95c89ba5e23a9925}
 
 # 2. IQ Test
 
-> 
-<br/> **> This challenge demanded that I .**
-
 ## Solution:
+![WhatsApp Image 2025-10-31 at 19 39 16_f970da25](https://github.com/user-attachments/assets/95ca469f-dfd3-4aff-b809-0be5eead2086)
 
-<br/>
-**Logic workling :**
-<img width="1920" height="1128" alt="Screenshot 2025-10-30 195026" src="https://github.com/user-attachments/assets/37658f81-df6f-47d0-bc37-c81ba844fbfc" />
 
 ## Flag:
 ```
-FCSC{b1dee4eeadf6c4e60aeb142b0b486344e64b12b40d1046de95c89ba5e23a9925}
+nite{10001001100}
 ```
 
 ## Concepts learnt
--Through this challenge, I learnt how one of the ways of encrypting messages is in the form of wave signals. These signals can further be decrypted by using a software like the Logic 2
-## Notes
--For UART protocol --> use Async Serial analyzer.
-## Resources
--[https://www.youtube.com/watch?v=Ak9R4yxQPhs]
+- Logic gate analysis
 
 # 3. Bare Metal Alchemist
 
