@@ -158,3 +158,142 @@ picoCTF{n33d_a_IArg3r_e_ccaa7776}
 >[https://stackoverflow.com/questions/356090/how-to-compute-the-nth-root-of-a-very-big-integer]
 >[https://www.rapidtables.com/convert/number/decimal-to-hex.html]
 >[https://neapay.com/online-tools/hex-to-ascii-converter.html]
+
+# 2. rsa_oracle
+
+> Can you abuse the oracle?
+ An attacker was able to intercept communications between a bank and a fintech company. They managed to get the message (ciphertext) and the password that was used to encrypt the message.
+Additional details will be available after launching your challenge instance.
+<br/> **> This challenge demanded that I perform calculations(using python script) to decrypt the encrypted password first, and then decrypt the ciphertext.**
+
+
+## Solution:
+Firstly, I logged into the picoCTF portal using the `nc` linking. Then I used GPT to write out an integrated code that would call the pico portal and also find the password in its decrypted form. The following is the logic of the code to find out the decrypted password :
+>we firtst encrypt the number 2
+>now we have 2^e, we multiply by m^e 
+>we decrypt 2^e*m^e, which will yield 2*m
+>we grab the response, convert it from hexadecimal and divide by 2
+
+<br/>
+*I used jupyter notebook because pwn tools were not working on my system*
+**source code in python** :
+
+```
+from pwn import *
+
+connection = remote('titan.picoctf.net', 52263)
+
+response = connection.recvuntil('decrypt.')
+print(response.decode())
+payload = b'E' + b'\n'
+
+connection.send(payload)
+
+response = connection.recvuntil('keysize):')
+print(response.decode())
+
+#We want to encrypt the number 2
+payload = b'\x02' + b'\n'
+connection.send(payload)
+response = connection.recvuntil('ciphertext (m ^ e mod n)')
+response = connection.recvline()
+
+num=int(response.decode())*2336150584734702647514724021470643922433811330098144930425575029773908475892259185520495303353109615046654428965662643241365308392679139063000973730368839
+
+
+response = connection.recvuntil('decrypt.')
+print(response.decode())
+payload = b'D' + b'\n'
+connection.send(payload)
+
+response = connection.recvuntil('decrypt:')
+print(response.decode())
+connection.send(str(num)+'\n')
+
+response = connection.recvuntil('hex (c ^ d mod n):')
+print(response.decode())
+response = connection.recvline()
+print(response.decode())
+
+num=int(response,16)//2
+print(hex(num))
+
+hex_string=hex(num)[2:] # get rid of 0x
+byte_array=bytes.fromhex(hex_string)
+print(byte_array.decode('ascii'))
+
+connection.close()
+
+```
+**Output :** 
+<br/>
+```
+[x] Opening connection to titan.picoctf.net on port 52263
+[x] Opening connection to titan.picoctf.net on port 52263: Trying 3.139.174.234
+[+] Opening connection to titan.picoctf.net on port 52263: Done
+
+
+C:\Users\SHRADDHA\AppData\Local\Temp\ipykernel_31820\184103291.py:6: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+  response = connection.recvuntil('decrypt.')
+
+
+*****************************************
+****************THE ORACLE***************
+*****************************************
+what should we do for you? 
+E --> encrypt D --> decrypt.
+
+
+C:\Users\SHRADDHA\AppData\Local\Temp\ipykernel_31820\184103291.py:12: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+  response = connection.recvuntil('keysize):')
+
+
+
+enter text to encrypt (encoded length must be less than keysize):
+
+
+C:\Users\SHRADDHA\AppData\Local\Temp\ipykernel_31820\184103291.py:18: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+  response = connection.recvuntil('ciphertext (m ^ e mod n)')
+C:\Users\SHRADDHA\AppData\Local\Temp\ipykernel_31820\184103291.py:25: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+  response = connection.recvuntil('decrypt.')
+C:\Users\SHRADDHA\AppData\Local\Temp\ipykernel_31820\184103291.py:31: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+  response = connection.recvuntil('decrypt:')
+
+
+what should we do for you? 
+E --> encrypt D --> decrypt.
+ 
+Enter text to decrypt:
+
+
+C:\Users\SHRADDHA\AppData\Local\Temp\ipykernel_31820\184103291.py:33: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+  connection.send(str(num)+'\n')
+C:\Users\SHRADDHA\AppData\Local\Temp\ipykernel_31820\184103291.py:35: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+  response = connection.recvuntil('hex (c ^ d mod n):')
+
+
+decrypted ciphertext as hex (c ^ d mod n):
+ 6c60cc6a60
+
+0x3630663530
+60f50
+[*] Closed connection to titan.picoctf.net port 52263
+```
+
+Then following the hints and using my terminal I decrypted the ciphertext by using the openssl portal.
+**Terminal working :**
+```
+shraddhatiwari@LAPTOP-F2C51A3F:~$ openssl enc -aes-256-cbc -d -in secret.enc -k 60f50
+*** WARNING : deprecated key derivation used.
+Using -iter or -pbkdf2 would be better.
+picoCTF{su((3ss_(r@ck1ng_r3@_60f50766}
+```
+## Flag:
+```
+picoCTF{su((3ss_(r@ck1ng_r3@_60f50766}
+```
+## Concepts learnt:
+ > **RSA malleability and oracle abuse** — I learned how an encryption oracle can be abused i.e. by encrypting a small known value (2), multiplying its ciphertext with the intercepted ciphertext, and asking the oracle to decrypt the product, you can recover a predictable relationship (2·m) and use it to derive the original secret. This demonstrates RSA’s vulnerability to chosen-ciphertext style manipulation when an oracle is available. This logic I learnt using a youtube video.
+>**pwn tools** - I learnt to make effective use of pwn tools in CTFs in solving remote challenges. 
+ <br/>
+
