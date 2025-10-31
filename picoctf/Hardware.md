@@ -54,6 +54,7 @@ After this I identified the data in 0x68 to be the encoded hex data. This data a
 
 **Encrypted text :**
 > f1e3e6e6f1e3def1cd94d6fa94d6fad6cac896fad694c8d5c996fa91d7c1d094cbcafac394d7c8d291d7c0d8
+<br/>
 **Decrypter used to get final flag :**
 <img width="1920" height="831" alt="Screenshot 2025-11-01 005519" src="https://github.com/user-attachments/assets/425e8668-f362-4e8e-aee6-11b574044aa8" />
 
