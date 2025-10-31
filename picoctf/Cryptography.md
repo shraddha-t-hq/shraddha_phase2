@@ -159,7 +159,7 @@ picoCTF{n33d_a_IArg3r_e_ccaa7776}
 >[https://www.rapidtables.com/convert/number/decimal-to-hex.html]
 >[https://neapay.com/online-tools/hex-to-ascii-converter.html]
 
-# 2. rsa_oracle
+# 3. rsa_oracle
 
 > Can you abuse the oracle?
  An attacker was able to intercept communications between a bank and a fintech company. They managed to get the message (ciphertext) and the password that was used to encrypt the message.
