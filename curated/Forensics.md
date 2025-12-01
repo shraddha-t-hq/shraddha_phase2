@@ -39,3 +39,35 @@ nite{h1d3_4nd_s33k_but_w1th_st3g_sdfu9s8}
 - I learnt how to apply the extracted passphrase to extract data hidden in images using `steghide`.
  
   ***
+
+
+# 1. Nutrela
+>One of my favorite foods is soya chunks. But as I was enjoying some Nutrela today, I noticed a few chunks weren’t quite right. Seems like something’s off with their >structure. Could you help me fix these broken chunks so I can enjoy my meal again?
+
+**The challenge demanded that I analyze and fix the hexdata of the corrupted PNG file.**
+
+
+## Solution:
+Upon clicking on the file its showed that the format was not supported, which hinted at the hex data of the file being corrupted. Taking hints from the description it probably meant that particular `chuncks` were manipulated. 
+I opened the file in a hex editor to further inspect it. I tallied the header signature with the standard signature and a few bytes were off making the PNG signature of the file in lowercase. after fixing the header, the problem persisted. I check for other keywords and it turned out that all file definition keywords-like `IHDR`, `IDAT` and `IEND`- were too in lowercase in the strings. So I changed them to the desired values and the image containing the flag was recovered.
+
+**Image generated after successful manipulation:**
+<img width="512" height="512" alt="nutrela" src="https://github.com/user-attachments/assets/1413f12e-506d-4259-803d-92df859cdbf1" />
+
+<br/>
+
+## Flag:
+```
+nite{nOw_yOu_knOw_abOut_PNG_chunk5}
+```
+
+## Concepts learnt:
+- Through this challenge, I learned that there are a few file definition keywords - FOR PNG: IHDR, IDAT, IEND - which, if manipulated, can corrupt the file.
+- These keywords are case sensitive.
+
+ ## Additional resources :
+ - [https://www.nayuki.io/page/png-file-chunk-inspector]
+  ***
+
+
+  
