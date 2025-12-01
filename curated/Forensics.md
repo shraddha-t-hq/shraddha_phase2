@@ -3,8 +3,10 @@
 > Can you find it before the others do?
 >Hint:
 >Even in retirement, Sakamoto never loses at hide and seek. Maybe stegseek can help you keep up.
+<br/>
 **The challenge demanded that I use stegseek to get the flag.**
 <br/>
+
 ## Solution:
 Firstly, I used stegseek to find the passphrase for the steghide manipulation. 
 Then I used the extracted passphrase in steghide to extract the flag and write the flag into `flag.txt`.
