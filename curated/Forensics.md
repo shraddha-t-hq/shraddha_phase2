@@ -70,5 +70,67 @@ nite{nOw_yOu_knOw_abOut_PNG_chunk5}
  - [https://www.nayuki.io/page/png-file-chunk-inspector]
   ***
 
+  
+# 3. RAR of the Abyss
+>Two philosophers peer into the networked abyss and swap a secret. Use the secret to decrypt the Abyss’ RAwR and pull your flag from the void.ced a few chunks weren’t quite >right. Seems like something’s off with their >structure. Could you help me fix these broken chunks so I can enjoy my meal again?
+
+**The challenge demanded that I manipulate a .pcap file to extract a password and encoded data. Then decode it to get the flag.**
+
+
+## Solution:
+Firstly, I opened the .pcap file in Wireshark. I filtered out the TCP files and `followed` the TCP channels to find a conversation and eventually the password and encoded data. 
+
+**Password :**
+```
+Nietzsche: b3y0ndG00dand3vil
+```
+
+**Image of the encoded data in a TCP channel:**
+<br/>
+<img width="1284" height="1129" alt="Screenshot 2025-12-01 125755" src="https://github.com/user-attachments/assets/efa67deb-490b-4861-aa21-504f9e21720e" />
+
+Then I decoded this data by putting it into a .rar file and extracting using the password found.
+
+<br/>
+**Terminal working:**
+<br/>
+```
+shraddhatiwari@LAPTOP-F2C51A3F:~$ echo "526172211a07010094ceedc121040000010f644537b9278a61e25503b4957506e3674391aa0766e843dca3d75f52dc08f7774f6470a0a32680ccd66b612ae47347d80e85f7a2d1907178728fa65de05fe2ec158a6fb40be196b2fe5b2abbe7f1568c445080a86b1b49eebe54ef777e1886c796fabafd16e51baaa431b1c0ed3a6f3a0700a6c34b4f64ea7103e939aff7a95a9e9b2ea0b87cbc186159a252d0048f5b1da871387f8f930fbde37df8dd1e41a8215c00b045e59f374c21e67c9f1dd02fb983ee101784fadaa92929ed7b6a61c4da9d9ffa7487f7e6853dadd1ebf40b1998b716f0ab41d19d1b6a25000c58c2fc96f9b0c4cdcfa7ee79b2ef926b051dff7132a4c4a3f84b75dbd9760b67fba3cb5c797bd7bdf1d7de52a94a7f" | xxd -r -p > rawr.rar
+shraddhatiwari@LAPTOP-F2C51A3F:~$ ls | grep rawr.rar
+rawr.rar
+shraddhatiwari@LAPTOP-F2C51A3F:~$ rar x rawr.rar -pb3y0ndG00dand
+3vil
+
+RAR 7.00   Copyright (c) 1993-2024 Alexander Roshal   26 Feb 2024
+Trial version             Type 'rar -?' for help
+
+
+Extracting from rawr.rar
+
+
+Would you like to replace the existing file flag.txt
+    42 bytes, modified on 2025-11-30 22:47
+with a new one
+    47 bytes, modified on 2025-10-22 13:53
+
+[Y]es, [N]o, [A]ll, n[E]ver, [R]ename, [Q]uit y
+
+Extracting  flag.txt                                                  OK
+All OK
+shraddhatiwari@LAPTOP-F2C51A3F:~$ cat flag.txt
+nite{thus_sp0k3_th3_n3tw0rk_f0r3ns1cs_4n4lyst}
+```
+<br/>
+
+## Flag:
+```
+nite{thus_sp0k3_th3_n3tw0rk_f0r3ns1cs_4n4lyst}
+```
+
+## Concepts learnt:
+- Through this challenge, I refined my network forensics skills and the concept of Transport Control Protocol.
+- I also learnt how to handle and extract data from encoded .rar files
+
+  ***
 
   
