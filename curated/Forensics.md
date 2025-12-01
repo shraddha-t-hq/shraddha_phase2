@@ -3,14 +3,15 @@
 > Can you find it before the others do?
 >Hint:
 >Even in retirement, Sakamoto never loses at hide and seek. Maybe stegseek can help you keep up.
-<br/>> **The challenge demanded that I use stegseek to get the flag.**
-
+**The challenge demanded that I use stegseek to get the flag.**
+<br/>
 ## Solution:
 Firstly, I used stegseek to find the passphrase for the steghide manipulation. 
 Then I used the extracted passphrase in steghide to extract the flag and write the flag into `flag.txt`.
 <br/>
 
-**Terminal working :** 
+**Terminal working:** 
+
 ```
 shraddhatiwari@LAPTOP-F2C51A3F:~$ stegseek sakamoto.jpg
 StegSeek 0.6 - https://github.com/RickdeJager/StegSeek
@@ -25,9 +26,9 @@ wrote extracted data to "flag.txt".
 shraddhatiwari@LAPTOP-F2C51A3F:~$ cat flag.txt
 nite{h1d3_4nd_s33k_but_w1th_st3g_sdfu9s8}
 ```
+
 <br/>
 ## Flag:
-
 ```
 nite{h1d3_4nd_s33k_but_w1th_st3g_sdfu9s8}
 ```
