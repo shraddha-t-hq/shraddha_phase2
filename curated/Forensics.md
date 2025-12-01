@@ -5,7 +5,7 @@
 >Even in retirement, Sakamoto never loses at hide and seek. Maybe stegseek can help you keep up.
 <br/>
 **The challenge demanded that I use stegseek to get the flag.**
-<br/>
+
 
 ## Solution:
 Firstly, I used stegseek to find the passphrase for the steghide manipulation. 
@@ -29,7 +29,6 @@ shraddhatiwari@LAPTOP-F2C51A3F:~$ cat flag.txt
 nite{h1d3_4nd_s33k_but_w1th_st3g_sdfu9s8}
 ```
 
-<br/>
 ## Flag:
 ```
 nite{h1d3_4nd_s33k_but_w1th_st3g_sdfu9s8}
