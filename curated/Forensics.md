@@ -153,7 +153,7 @@ GIC2024
                           └── j4gjesg4.default-release\
 
 <br/>
-<img width="1920" height="1200" alt="Screenshot 2025-08-17 164838" src="https://github.com/user-attachments/assets/96316a39-0c92-4837-892b-add86a76c783" />
+<img width="1422" height="808" alt="Screenshot 2025-12-02 222435" src="https://github.com/user-attachments/assets/266a0279-cebf-4971-a206-40354b6457a6" />
 <br/>
 Then I used a firefox decoder from the following github repository : [https://github.com/unode/firefox_decrypt.git]
 This was used to decode the passwords from the profile and extract the flag. The following is the terminal working : 
