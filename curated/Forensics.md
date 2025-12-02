@@ -132,4 +132,89 @@ nite{thus_sp0k3_th3_n3tw0rk_f0r3ns1cs_4n4lyst}
 
   ***
 
+# 4. Hide and Seek
+> Looks like I got a little too clever and hid the flag as a password in Firefox, tucked away like one of NineTails’ many tails.
+> Recover the "logins" and the "key4" and let it guide you to the flag.
+> Hint:
+> I named my Ninetails "j4gjesg4", quite a peculiar name isn't it?
+
+**The challenge demanded that I extract firefox passwords in plaintext.**
+
+## Solution:
+Firstly, I used FTK Imager in order to expand the `ninetails.ad1` file(extracted from `ninetails.rar`).
+Then I went into the only user folder present there : `GIC2024`.
+the following is the path I followed to reach the firefox keys4 and logins file :
+GIC2024
+ └── AppData
+      └── Roaming
+           └── Mozilla
+                └── Firefox
+                     └── Profiles
+                          └── j4gjesg4.default-release\
+
+<br/>
+<img width="1920" height="1200" alt="Screenshot 2025-08-17 164838" src="https://github.com/user-attachments/assets/96316a39-0c92-4837-892b-add86a76c783" />
+<br/>
+Then I used a firefox decoder from the following github repository : [https://github.com/unode/firefox_decrypt.git]
+This was used to decode the passwords from the profile and extract the flag. The following is the terminal working : 
+**Terminal working:** 
+```
+shraddhatiwari@LAPTOP-F2C51A3F:~$ cd ./nt
+shraddhatiwari@LAPTOP-F2C51A3F:~/nt$ git clone https://github.com/unode/firefox_decrypt.git
+Cloning into 'firefox_decrypt'...
+remote: Enumerating objects: 1482, done.
+remote: Counting objects: 100% (392/392), done.
+remote: Compressing objects: 100% (103/103), done.
+remote: Total 1482 (delta 319), reused 329 (delta 278), pack-reused 1090 (from 2)
+Receiving objects: 100% (1482/1482), 519.97 KiB | 4.37 MiB/s, done.
+Resolving deltas: 100% (916/916), done.
+shraddhatiwari@LAPTOP-F2C51A3F:~/nt$ ls
+firefox_decrypt  key4.db  logins.json
+shraddhatiwari@LAPTOP-F2C51A3F:~/nt$ cd ./firefox_decrypt
+shraddhatiwari@LAPTOP-F2C51A3F:~/nt/firefox_decrypt$ ls
+CHANGELOG.md     LICENSE    firefox_decrypt.py  tests
+CONTRIBUTORS.md  README.md  pyproject.toml
+shraddhatiwari@LAPTOP-F2C51A3F:~/nt/firefox_decrypt$ python ./firefox_decrypt.py
+Command 'python' not found, did you mean:
+  command 'python3' from deb python3
+  command 'python' from deb python-is-python3
+shraddhatiwari@LAPTOP-F2C51A3F:~/nt/firefox_decrypt$ mv ~/nt/ninetails ~/nt/firefox_decrypt/
+shraddhatiwari@LAPTOP-F2C51A3F:~/nt/firefox_decrypt$ python3 fir
+efox_decrypt.py ninetails
+2025-12-02 16:53:53,269 - WARNING - profile.ini not found in ninetails
+2025-12-02 16:53:53,269 - WARNING - Continuing and assuming 'ninetails' is a profile location
+
+Website:   https://www.rehack.xyz
+Username: 'warlocksmurf'
+Password: 'GCTF{m0zarella'
+
+Website:   https://ctftime.org
+Username: 'ilovecheese'
+Password: 'CHEEEEEEEEEEEEEEEEEEEEEEEEEESE'
+
+Website:   https://www.reddit.com
+Username: 'bluelobster'
+Password: '_f1ref0x_'
+
+Website:   https://www.facebook.com
+Username: 'flag'
+Password: 'SIKE'
+
+Website:   https://warlocksmurf.github.io
+Username: 'Man I Love Forensics'
+Password: 'p4ssw0rd}'
+```
+
+## Flag:
+```
+GCTF{m0zarella_f1ref0x_p4ssw0rd}
+```
+
+## Concepts learnt:
+- Through this challenge, I learned about password safety in a browser - especially Firefox.
+- I learnt how to extract and analyze a forensic image using FTK Imager, how to navigate Windows directory structures inside an acquired image and gained an understanding of how user data is stored.
+- I learnt how Firefox's NSS stores encrypted data using keys(stored in key4.db)
+- I learnt how to extract passwords from a Firefox profile through .json and .db files.
+  
+  ***
   
