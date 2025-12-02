@@ -144,14 +144,7 @@ nite{thus_sp0k3_th3_n3tw0rk_f0r3ns1cs_4n4lyst}
 Firstly, I used FTK Imager in order to expand the `ninetails.ad1` file(extracted from `ninetails.rar`).
 Then I went into the only user folder present there : `GIC2024`.
 the following is the path I followed to reach the firefox keys4 and logins file :
-GIC2024
- └── AppData
-      └── Roaming
-           └── Mozilla
-                └── Firefox
-                     └── Profiles
-                          └── j4gjesg4.default-release\
-
+GIC2024 --> AppData --> Roaming --> Mozilla --> Firefox --> Profiles --> j4gjesg4.default-release\
 <br/>
 <img width="1422" height="808" alt="Screenshot 2025-12-02 222435" src="https://github.com/user-attachments/assets/266a0279-cebf-4971-a206-40354b6457a6" />
 <br/>
