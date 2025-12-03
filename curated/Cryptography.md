@@ -4,20 +4,20 @@
 
 ## Solution:
 The code given encrypted each bit of the flag into a large modulo-p number using quadratic residues and non-residues. 
-How the encryption code worked : 
-It basically did the following : 
-0 bit --> a·x(mod p) where x is a quadratic residue(QR)
-1 bit --> a·y(mod p) where y = –x mod p is a quadratic non-residue(QNR)
-get_x() picked a quadratic residue(using Euler’s criterion). get_y() returned a quadratic non-residue
-Then each bit of the flag was converted to binary representation and encoded using the functions get_x() and get_y.
+How the encryption code worked : <br/>
+It basically did the following :  <br/>
+0 bit --> a·x(mod p) where x is a quadratic residue(QR) <br/>
+1 bit --> a·y(mod p) where y = –x mod p is a quadratic non-residue(QNR) <br/>
+get_x() picked a quadratic residue(using Euler’s criterion). get_y() returned a quadratic non-residue <br/>
+Then each bit of the flag was converted to binary representation and encoded using the functions get_x() and get_y. <br/>
 
-Logic to reverse(decrypt) it :
-Each encrypted value is read from the out.txt.
-Euler’s Criterion is applied to determine if it is a QR or QNR. (using `leg = pow(c, (p-1)//2, p)`)
-QR AND QNR are mapped back to its origin bits(0/1)
-All recovered bits are concatenated. Finally bitstring to is converted to an integer then to bytes to recover the flag.
+Logic to reverse(decrypt) it : <br/>
+Each encrypted value is read from the out.txt. <br/>
+Euler’s Criterion is applied to determine if it is a QR or QNR. (using `leg = pow(c, (p-1)//2, p)`)  <br/>
+QR AND QNR are mapped back to its origin bits(0/1)  <br/>
+All recovered bits are concatenated. Finally bitstring to is converted to an integer then to bytes to recover the flag.  <br/>
 
-I used GPT to write assemble this logic and write the code in python.
+I used GPT to write assemble this logic and write the code in python.  <br/>
 <br/>
 **Python decryption code**
 ```
