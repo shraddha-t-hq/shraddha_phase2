@@ -64,3 +64,36 @@ nite{r3s1du35_f4ll1ng_1nt0_pl4c3}
 - How to reconstruct a message bit-by-bit by evaluating each ciphertext value with Euler’s criterion, and extracting a full bitstring, Converting those bits into an integer and then into bytes reconstructed the flag.
   ***
 
+# 1. Residue Refinery
+
+**The challenge required to recover the secret flag from a custom encryption scheme.**
+
+## Solution:
+How the encryption code worked (what happened in the code): <br/>
+It basically did the following :  <br/>
+It Split the flag at nite{...} we had to recover the inside part. <br/>
+Then it processed the flag in 2-byte blocks. <br/>
+It Used a secret 2-byte key ks=os.urandom(2).
+ <br/>
+<br/>
+
+
+**Python decryption code**
+
+**Terminal working:** 
+
+```
+
+```
+
+## Flag:
+```
+
+```
+
+## Concepts learnt:
+- How quadratic residues work:
+ - For a prime modulus 𝑝, Euler’s criterion tells you whether a value is a QR or a QNR.
+- How to reconstruct a message bit-by-bit by evaluating each ciphertext value with Euler’s criterion, and extracting a full bitstring, Converting those bits into an integer and then into bytes reconstructed the flag.
+  ***
+
