@@ -335,3 +335,60 @@ print("Done. Try opening", OUT_FIXED)
 
 ## Concepts learnt:
 - 
+
+# 1. All Signs Allign
+
+**The challenge required to analyze a custom cryptographic scheme.**
+
+## Solution:
+The code given encrypted 
+How the encryption code worked : <br/>
+It basically did the following :  <br/>
+
+
+Logic to reverse(decrypt) it : <br/>
+
+
+I used GPT to write assemble this logic and write the code in python.  <br/>
+<br/>
+**Python decryption code**
+```
+from Crypto.Util.number import *
+from sympy import discrete_log
+
+p = 396430433566694153228963024068183195900644000015629930982017434859080008533624204265038366113052353086248115602503012179807206251960510130759852727353283868788493357310003786807
+
+X = 124499652441066069321544812234595327614165778598236394255418354986873240978090206863399216810942232360879573073405796848165530765886142184827326462551698684564407582751560255175
+Y = 208271276785711416565270003674719254652567820785459096303084135643866107254120926647956533028404502637100461134874329585833364948354858925270600245218260166855547105655294503224
+
+#Y- 13*X = 37^(m-1)*(37-13)
+num = (Y - 13*X) % p
+den = (37 - 13)
+target = (num * inverse(den, p)) % p
+
+# solve 37^(m-1) = target mod p
+m1=discrete_log(p, target, 37)  # gives m-1
+ticket = m1 + 1
+
+print("Recovered ticket =", ticket)
+print("Recovered flag =", long_to_bytes(ticket))
+```
+
+**Terminal working:** 
+
+```
+shraddhatiwari@LAPTOP-F2C51A3F:~$ rm ticket.py && nano ticket.py
+shraddhatiwari@LAPTOP-F2C51A3F:~$ python3 ticket.py
+Recovered ticket = 762035150520137567051383230813374869523369672000904743873872089989543805
+Recovered flag = b'nite{g0ld3n_t1ck3t_t0_gl4sg0w}'
+```
+
+## Flag:
+```
+nite{g0ld3n_t1ck3t_t0_gl4sg0w}
+```
+
+## Concepts learnt:
+- 
+  ***
+
