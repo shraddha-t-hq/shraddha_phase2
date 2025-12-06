@@ -66,14 +66,33 @@ nite{r3s1du35_f4ll1ng_1nt0_pl4c3}
 
 # 2. Residue Refinery
 
-**The challenge required to recover the secret flag from a custom encryption scheme.**
+**The challenge required reversing a custom quadratic field multiplication scheme to recover a hidden key and decrypt the flag.**
 
 ## Solution:
-How the encryption code worked (what happened in the code): <br/>
-It basically did the following :  <br/>
-It Split the flag at nite{...} we had to recover the inside part. <br/>
-Then it processed the flag in 2-byte blocks. <br/>
-It Used a secret 2-byte key ks=os.urandom(2).
+The challenge implemented a custom encryption scheme using multiplication inside a quadratic extension field modulo p = 257.
+Each plaintext block of 2 bytes was treated as an element (a, b) in the field Fₚ[x] / (x² − 3), and encryption simply multiplied this element by a secret key element ks in the same field.
+Because multiplication in this field uses the rule x² = 3 (mod p), the ciphertext looked like completely scrambled byte pairs.
+
+How the encryption worked: <br/>
+It represented every 2-byte block of the flag as (pt₀, pt₁), interpreted as a field element. <br/>
+A fixed 2-byte secret key (k₀, k₁) was chosen. <br/>
+Ciphertext was produced by computing ks × pt, using the custom multiplication where
+x² → 3, so the product of two elements (a, b) and (c, d) becomes:
+
+first component = a·c + 3·b·d (mod 257) <br/>
+
+second component = a·d + b·c (mod 257) <br/>
+Finally, each product (u, v) was written to bytes in reversed order before output.
+
+Logic to reverse (decrypt) it: <br/>
+A known-plaintext block (“1m” = 316d in hex) was used to recover the key. <br/>
+From the first 2 ciphertext bytes, the solver reversed the byte-order and obtained the field element (c₀, c₁). <br/>
+Since encryption was ks × pt = ct, a simple linear system was solved to recover the key (k₀, k₁) using modular arithmetic. <br/>
+After recovering the key, its multiplicative inverse in this quadratic field was computed. <br/>
+Each ciphertext block (c₀, c₁) was then multiplied by ks⁻¹, restoring the plaintext block. <br/>
+All blocks were decoded in this way, giving back the inner flag string. <br/>
+
+I used GPT to assemble the mathematical steps, derive the inverse element, and write the Python code that automated key recovery and decryption. <br/>
  <br/>
 <br/>
 
@@ -210,11 +229,11 @@ Full flag should be: nite{1mp0r7_m0dul3?_1_4M_7h3_m0dul3}
 ```
 
 ## Concepts learnt:
-- 
+- I learned how encryption using a quadratic extension field works, representing plaintext blocks as 2-byte elements and multiplying them by a secret key inside the field. I understood how modular arithmetic and field-specific multiplication rules can scramble data, and how a known-plaintext attack allows recovery of the key by solving a simple modular linear system. I also learned how to compute the multiplicative inverse of an element in a quadratic field, and how applying it to ciphertext blocks restores the original plaintext, demonstrating the practical application of number theory and field arithmetic in cryptanalysis.
   ***
 # 3. Quixorte
 
-**The challenge required to recover the secret flag from a custom encryption scheme.**
+**The challenge required reversing a custom byte-rotation and sliding-XOR scheme to reconstruct a valid PNG file.**
 
 ## Solution:
 The encryption had rotated every byte by its index and then XORed the data with an 8-byte repeating key. To reverse this, I first undid the rotation on just the first eight bytes so that the PNG header became partially visible again. Since a valid PNG header is fixed and known, I compared the rotated bytes against the standard header to extract the XOR key by simply XORing the two. Once the key was recovered, I applied it sliding across the entire file to undo the original XOR step. After that, I reversed the index-based rotation on all bytes to restore the true PNG data. Finally, because the PNG chunks were corrupted after decryption, I recalculated all CRC values for every chunk so the file became valid and could be opened normally. The final decrypted image was saved as final.png.
@@ -330,7 +349,7 @@ print("Done. Try opening", OUT_FIXED)
 
 # 4. Willy’s Chocolate Experience
 
-**The challenge required to analyze a custom cryptographic scheme.**
+**The challenge required analyzing a custom modular-exponentiation scheme to recover a hidden exponent.**
 
 ## Solution:
 The code that I have solved this challenge with transformed the flag into a large modulo-p number by evaluating an exponential function at the “ticket” integer.
