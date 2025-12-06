@@ -211,3 +211,441 @@ GCTF{m0zarella_f1ref0x_p4ssw0rd}
   
   ***
   
+# 5. Re:Draw
+> Her screen went black and a strange command window flickered to life, lines of text flashed across before everything went silent. Moments later, the system crashed. By >sheer luck, we recovered a memory dump. 
+>Note: There are three stages to this challenge and you will find three flags.
+>What we know: just before the crash, a black command window flickered across the screen, something in its output might still be visible if you dig through memory. She was >drawing when it happened, and remnants of a painting program linger, which could reveal more if inspected in the right way. Finally, a mysterious archive hides deeper in >memory, likely holding the last piece of her work.
+>Hint:
+>Learn up on volatility 2 and its various plugins and what they are used for.
+
+**The challenge demanded that I load and analyze a Windows memory dump using Volatility 2.**
+
+
+## Solution:
+<br/>
+After extracting the memory dump file from the .7z file and learning a bit about volatility 2 commands I first started by identification of the OS to find the right profile. This was done using the command : `volatility -f MemoryDump_Lab1.raw imageinfo`.
+<br/>
+It was found that the profile was - `Win7SP1x64`. this would be useful to run the system targeted volatility commands.
+<br/>
+This was followed by the assessment of all the processes that wewre going on before the system closure, using - `volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 pslist`
+The `pslist` command lists all the processes.
+<br/>
+The processes of mspaint and WinRaR fairly stood out to me.
+So I investigated further. First the WinRaR process :
+the `cmdline` plugin shows the exact command-line used to start a process and the pid specifies the process. It revealed a path to a .rar file.
+To investigate it further, I ran the `consoles` plugin.
+In the output was what seemed to be a base64 encoded string, which I decoded and turned out to be the first flag!
+<br/>
+But the Important.rar file still drew attention, so the `filescan` plugin was used to extract details about the file, like offset. Once the offset was found, I dumped its contents onto a file on my system and saved it as `Important.rar`. Once I started extracting the .rar file, it showed up with a hit for flag 3. The prompt asked for a password- which was the NTLM hash of the account. I found that using `volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 hashdump`, converted it to uppercase and got a `flag3.png` file. <br/>
+<img width="500" height="500" alt="flag3" src="https://github.com/user-attachments/assets/0785c13d-ab5d-4554-a460-3e2e53b2b595" />
+<br/>
+Now only the second falg remained hidden, now we explore the mspaint side of the memory dump.
+I found out the PID of the mspaint process and dumped its contents in a file on my system by using the commands: `volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 memdump -p 2424 -D .` . Then i explored multiple ways to view this data or the message encrypted (like strings ertc.) and finally stumbled upon GIMP.
+Manipulating the file in GIMP gave the final flag : 
+<br/>
+**GIMP INTERFACE :**
+<img width="1920" height="1128" alt="Screenshot 2025-12-05 155111" src="https://github.com/user-attachments/assets/61adda4f-25a3-4b98-9220-445bcc312df6" />
+<br/>
+
+**Terminal working:** 
+
+```
+shraddhatiwari@LAPTOP-F2C51A3F:~$ cd ./vol
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ 7z x Re_Draw.7z
+
+7-Zip 23.01 (x64) : Copyright (c) 1999-2023 Igor Pavlov : 2023-06-20
+ 64-bit locale=C.UTF-8 Threads:18 OPEN_MAX:10240
+
+Scanning the drive for archives:
+1 file, 158197742 bytes (151 MiB)
+
+Extracting archive: Re_Draw.7z
+--
+Path = Re_Draw.7z
+Type = 7z
+Physical Size = 158197742
+Headers Size = 146
+Method = LZMA2:24
+Solid = -
+Blocks = 1
+Everything is Ok
+
+Size:       1073676288
+Compressed: 158197742
+
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ ls
+ MemoryDump_Lab1.raw  Re_Draw.7z   volatility
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ volatility -f MemoryDump_Lab1.raw imageinfo
+Volatility Foundation Volatility Framework 2.6.1
+INFO    : volatility.debug    : Determining profile based on KDBG search...
+          Suggested Profile(s) : Win7SP1x64, Win7SP0x64, Win2008R2SP0x64, Win2008R2SP1x64_24000, Win2008R2SP1x64_23418, Win2008R2SP1x64, Win7SP1x64_24000, Win7SP1x64_23418
+                     AS Layer1 : WindowsAMD64PagedMemory (Kernel AS)
+                     AS Layer2 : FileAddressSpace (/home/shraddhatiwari/vol/MemoryDump_Lab1.raw)
+                      PAE type : No PAE
+                           DTB : 0x187000L
+                          KDBG : 0xf800028100a0L
+          Number of Processors : 1
+     Image Type (Service Pack) : 1
+                KPCR for CPU 0 : 0xfffff80002811d00L
+             KUSER_SHARED_DATA : 0xfffff78000000000L
+           Image date and time : 2019-12-11 14:38:00 UTC+0000
+     Image local date and time : 2019-12-11 20:08:00 +0530
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 kdbgscan
+Volatility Foundation Volatility Framework 2.6.1
+**************************************************
+Instantiating KDBG using: Kernel AS Win7SP1x64 (6.1.7601 64bit)
+Offset (V)                    : 0xf800028100a0
+Offset (P)                    : 0x28100a0
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win7SP1x64
+Version64                     : 0xf80002810068 (Major: 15, Minor: 7601)
+Service Pack (CmNtCSDVersion) : 1
+Build string (NtBuildLab)     : 7601.17514.amd64fre.win7sp1_rtm.
+PsActiveProcessHead           : 0xfffff80002846b90 (48 processes)
+PsLoadedModuleList            : 0xfffff80002864e90 (140 modules)
+KernelBase                    : 0xfffff8000261f000 (Matches MZ: True)
+Major (OptionalHeader)        : 6
+Minor (OptionalHeader)        : 1
+KPCR                          : 0xfffff80002811d00 (CPU 0)
+
+**************************************************
+Instantiating KDBG using: Kernel AS Win7SP1x64 (6.1.7601 64bit)
+Offset (V)                    : 0xf800028100a0
+Offset (P)                    : 0x28100a0
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win2008R2SP0x64
+Version64                     : 0xf80002810068 (Major: 15, Minor: 7601)
+Service Pack (CmNtCSDVersion) : 1
+Build string (NtBuildLab)     : 7601.17514.amd64fre.win7sp1_rtm.
+PsActiveProcessHead           : 0xfffff80002846b90 (48 processes)
+PsLoadedModuleList            : 0xfffff80002864e90 (140 modules)
+KernelBase                    : 0xfffff8000261f000 (Matches MZ: True)
+Major (OptionalHeader)        : 6
+Minor (OptionalHeader)        : 1
+KPCR                          : 0xfffff80002811d00 (CPU 0)
+
+**************************************************
+Instantiating KDBG using: Kernel AS Win7SP1x64 (6.1.7601 64bit)
+Offset (V)                    : 0xf800028100a0
+Offset (P)                    : 0x28100a0
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win2008R2SP1x64
+Version64                     : 0xf80002810068 (Major: 15, Minor: 7601)
+Service Pack (CmNtCSDVersion) : 1
+Build string (NtBuildLab)     : 7601.17514.amd64fre.win7sp1_rtm.
+PsActiveProcessHead           : 0xfffff80002846b90 (48 processes)
+PsLoadedModuleList            : 0xfffff80002864e90 (140 modules)
+KernelBase                    : 0xfffff8000261f000 (Matches MZ: True)
+Major (OptionalHeader)        : 6
+Minor (OptionalHeader)        : 1
+KPCR                          : 0xfffff80002811d00 (CPU 0)
+
+**************************************************
+Instantiating KDBG using: Kernel AS Win7SP1x64 (6.1.7601 64bit)
+Offset (V)                    : 0xf800028100a0
+Offset (P)                    : 0x28100a0
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win2008R2SP1x64_24000
+Version64                     : 0xf80002810068 (Major: 15, Minor: 7601)
+Service Pack (CmNtCSDVersion) : 1
+Build string (NtBuildLab)     : 7601.17514.amd64fre.win7sp1_rtm.
+PsActiveProcessHead           : 0xfffff80002846b90 (48 processes)
+PsLoadedModuleList            : 0xfffff80002864e90 (140 modules)
+KernelBase                    : 0xfffff8000261f000 (Matches MZ: True)
+Major (OptionalHeader)        : 6
+Minor (OptionalHeader)        : 1
+KPCR                          : 0xfffff80002811d00 (CPU 0)
+
+**************************************************
+Instantiating KDBG using: Kernel AS Win7SP1x64 (6.1.7601 64bit)
+Offset (V)                    : 0xf800028100a0
+Offset (P)                    : 0x28100a0
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win7SP1x64_23418
+Version64                     : 0xf80002810068 (Major: 15, Minor: 7601)
+Service Pack (CmNtCSDVersion) : 1
+Build string (NtBuildLab)     : 7601.17514.amd64fre.win7sp1_rtm.
+PsActiveProcessHead           : 0xfffff80002846b90 (48 processes)
+PsLoadedModuleList            : 0xfffff80002864e90 (140 modules)
+KernelBase                    : 0xfffff8000261f000 (Matches MZ: True)
+Major (OptionalHeader)        : 6
+Minor (OptionalHeader)        : 1
+KPCR                          : 0xfffff80002811d00 (CPU 0)
+
+**************************************************
+Instantiating KDBG using: Kernel AS Win7SP1x64 (6.1.7601 64bit)
+Offset (V)                    : 0xf800028100a0
+Offset (P)                    : 0x28100a0
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win7SP1x64_24000
+Version64                     : 0xf80002810068 (Major: 15, Minor: 7601)
+Service Pack (CmNtCSDVersion) : 1
+Build string (NtBuildLab)     : 7601.17514.amd64fre.win7sp1_rtm.
+PsActiveProcessHead           : 0xfffff80002846b90 (48 processes)
+PsLoadedModuleList            : 0xfffff80002864e90 (140 modules)
+KernelBase                    : 0xfffff8000261f000 (Matches MZ: True)
+Major (OptionalHeader)        : 6
+Minor (OptionalHeader)        : 1
+KPCR                          : 0xfffff80002811d00 (CPU 0)
+
+**************************************************
+Instantiating KDBG using: Kernel AS Win7SP1x64 (6.1.7601 64bit)
+Offset (V)                    : 0xf800028100a0
+Offset (P)                    : 0x28100a0
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win7SP0x64
+Version64                     : 0xf80002810068 (Major: 15, Minor: 7601)
+Service Pack (CmNtCSDVersion) : 1
+Build string (NtBuildLab)     : 7601.17514.amd64fre.win7sp1_rtm.
+PsActiveProcessHead           : 0xfffff80002846b90 (48 processes)
+PsLoadedModuleList            : 0xfffff80002864e90 (140 modules)
+KernelBase                    : 0xfffff8000261f000 (Matches MZ: True)
+Major (OptionalHeader)        : 6
+Minor (OptionalHeader)        : 1
+KPCR                          : 0xfffff80002811d00 (CPU 0)
+
+**************************************************
+Instantiating KDBG using: Kernel AS Win7SP1x64 (6.1.7601 64bit)
+Offset (V)                    : 0xf800028100a0
+Offset (P)                    : 0x28100a0
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win2008R2SP1x64_23418
+Version64                     : 0xf80002810068 (Major: 15, Minor: 7601)
+Service Pack (CmNtCSDVersion) : 1
+Build string (NtBuildLab)     : 7601.17514.amd64fre.win7sp1_rtm.
+PsActiveProcessHead           : 0xfffff80002846b90 (48 processes)
+PsLoadedModuleList            : 0xfffff80002864e90 (140 modules)
+KernelBase                    : 0xfffff8000261f000 (Matches MZ: True)
+Major (OptionalHeader)        : 6
+Minor (OptionalHeader)        : 1
+KPCR                          : 0xfffff80002811d00 (CPU 0)
+
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 pslist
+Volatility Foundation Volatility Framework 2.6.1
+Offset(V)          Name                    PID   PPID   Thds     Hnds   Sess  Wow64 Start                          Exit 
+------------------ -------------------- ------ ------ ------ -------- ------ ------ ------------------------------ ------------------------------
+0xfffffa8000ca0040 System                    4      0     80      570 ------      0 2019-12-11 13:41:25 UTC+0000        
+0xfffffa800148f040 smss.exe                248      4      3       37 ------      0 2019-12-11 13:41:25 UTC+0000        
+0xfffffa800154f740 csrss.exe               320    312      9      457      0      0 2019-12-11 13:41:32 UTC+0000        
+0xfffffa8000ca81e0 csrss.exe               368    360      7      199      1      0 2019-12-11 13:41:33 UTC+0000        
+0xfffffa8001c45060 psxss.exe               376    248     18      786      0      0 2019-12-11 13:41:33 UTC+0000        
+0xfffffa8001c5f060 winlogon.exe            416    360      4      118      1      0 2019-12-11 13:41:34 UTC+0000        
+0xfffffa8001c5f630 wininit.exe             424    312      3       75      0      0 2019-12-11 13:41:34 UTC+0000        
+0xfffffa8001c98530 services.exe            484    424     13      219      0      0 2019-12-11 13:41:35 UTC+0000        
+0xfffffa8001ca0580 lsass.exe               492    424      9      764      0      0 2019-12-11 13:41:35 UTC+0000        
+0xfffffa8001ca4b30 lsm.exe                 500    424     11      185      0      0 2019-12-11 13:41:35 UTC+0000        
+0xfffffa8001cf4b30 svchost.exe             588    484     11      358      0      0 2019-12-11 13:41:39 UTC+0000        
+0xfffffa8001d327c0 VBoxService.ex          652    484     13      137      0      0 2019-12-11 13:41:40 UTC+0000        
+0xfffffa8001d49b30 svchost.exe             720    484      8      279      0      0 2019-12-11 13:41:41 UTC+0000        
+0xfffffa8001d8c420 svchost.exe             816    484     23      569      0      0 2019-12-11 13:41:42 UTC+0000        
+0xfffffa8001da5b30 svchost.exe             852    484     28      542      0      0 2019-12-11 13:41:43 UTC+0000        
+0xfffffa8001da96c0 svchost.exe             876    484     32      941      0      0 2019-12-11 13:41:43 UTC+0000        
+0xfffffa8001e1bb30 svchost.exe             472    484     19      476      0      0 2019-12-11 13:41:47 UTC+0000        
+0xfffffa8001e50b30 svchost.exe            1044    484     14      366      0      0 2019-12-11 13:41:48 UTC+0000        
+0xfffffa8001eba230 spoolsv.exe            1208    484     13      282      0      0 2019-12-11 13:41:51 UTC+0000        
+0xfffffa8001eda060 svchost.exe            1248    484     19      313      0      0 2019-12-11 13:41:52 UTC+0000        
+0xfffffa8001f58890 svchost.exe            1372    484     22      295      0      0 2019-12-11 13:41:54 UTC+0000        
+0xfffffa8001f91b30 TCPSVCS.EXE            1416    484      4       97      0      0 2019-12-11 13:41:55 UTC+0000        
+0xfffffa8000d3c400 sppsvc.exe             1508    484      4      141      0      0 2019-12-11 14:16:06 UTC+0000        
+0xfffffa8001c38580 svchost.exe             948    484     13      322      0      0 2019-12-11 14:16:07 UTC+0000        
+0xfffffa8002170630 wmpnetwk.exe           1856    484     16      451      0      0 2019-12-11 14:16:08 UTC+0000        
+0xfffffa8001d376f0 SearchIndexer.          480    484     14      701      0      0 2019-12-11 14:16:09 UTC+0000        
+0xfffffa8001eb47f0 taskhost.exe            296    484      8      151      1      0 2019-12-11 14:32:24 UTC+0000        
+0xfffffa8001dfa910 dwm.exe                1988    852      5       72      1      0 2019-12-11 14:32:25 UTC+0000        
+0xfffffa8002046960 explorer.exe            604   2016     33      927      1      0 2019-12-11 14:32:25 UTC+0000        
+0xfffffa80021c75d0 VBoxTray.exe           1844    604     11      140      1      0 2019-12-11 14:32:35 UTC+0000        
+0xfffffa80021da060 audiodg.exe            2064    816      6      131      0      0 2019-12-11 14:32:37 UTC+0000        
+0xfffffa80022199e0 svchost.exe            2368    484      9      365      0      0 2019-12-11 14:32:51 UTC+0000        
+0xfffffa8002222780 cmd.exe                1984    604      1       21      1      0 2019-12-11 14:34:54 UTC+0000        
+0xfffffa8002227140 conhost.exe            2692    368      2       50      1      0 2019-12-11 14:34:54 UTC+0000        
+0xfffffa80022bab30 mspaint.exe            2424    604      6      128      1      0 2019-12-11 14:35:14 UTC+0000        
+0xfffffa8000eac770 svchost.exe            2660    484      6      100      0      0 2019-12-11 14:35:14 UTC+0000        
+0xfffffa8001e68060 csrss.exe              2760   2680      7      172      2      0 2019-12-11 14:37:05 UTC+0000        
+0xfffffa8000ecbb30 winlogon.exe           2808   2680      4      119      2      0 2019-12-11 14:37:05 UTC+0000        
+0xfffffa8000f3aab0 taskhost.exe           2908    484      9      158      2      0 2019-12-11 14:37:13 UTC+0000        
+0xfffffa8000f4db30 dwm.exe                3004    852      5       72      2      0 2019-12-11 14:37:14 UTC+0000        
+0xfffffa8000f4c670 explorer.exe           2504   3000     34      825      2      0 2019-12-11 14:37:14 UTC+0000        
+0xfffffa8000f9a4e0 VBoxTray.exe           2304   2504     14      144      2      0 2019-12-11 14:37:14 UTC+0000        
+0xfffffa8000fff630 SearchProtocol         2524    480      7      226      2      0 2019-12-11 14:37:21 UTC+0000        
+0xfffffa8000ecea60 SearchFilterHo         1720    480      5       90      0      0 2019-12-11 14:37:21 UTC+0000        
+0xfffffa8001010b30 WinRAR.exe             1512   2504      6      207      2      0 2019-12-11 14:37:23 UTC+0000        
+0xfffffa8001020b30 SearchProtocol         2868    480      8      279      0      0 2019-12-11 14:37:23 UTC+0000        
+0xfffffa8001048060 DumpIt.exe              796    604      2       45      1      1 2019-12-11 14:37:54 UTC+0000        
+0xfffffa800104a780 conhost.exe            2260    368      2       50      1      0 2019-12-11 14:37:54 UTC+0000        
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 cmdline -p 1512
+Volatility Foundation Volatility Framework 2.6.1
+************************************************************************
+WinRAR.exe pid:   1512
+Command line : "C:\Program Files\WinRAR\WinRAR.exe" "C:\Users\Alissa Simpson\Documents\Important.rar"
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 consoles
+Volatility Foundation Volatility Framework 2.6.1
+**************************************************
+ConsoleProcess: conhost.exe Pid: 2692
+Console: 0xff756200 CommandHistorySize: 50
+HistoryBufferCount: 1 HistoryBufferMax: 4
+OriginalTitle: %SystemRoot%\system32\cmd.exe
+Title: C:\Windows\system32\cmd.exe - St4G3$1
+AttachedProcess: cmd.exe Pid: 1984 Handle: 0x60
+----
+CommandHistory: 0x1fe9c0 Application: cmd.exe Flags: Allocated, Reset
+CommandCount: 1 LastAdded: 0 LastDisplayed: 0
+FirstCommand: 0 CommandCountMax: 50
+ProcessHandle: 0x60
+Cmd #0 at 0x1de3c0: St4G3$1
+----
+Screen 0x1e0f70 X:80 Y:300
+Dump:
+Microsoft Windows [Version 6.1.7601]
+Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+
+C:\Users\SmartNet>St4G3$1
+ZmxhZ3t0aDFzXzFzX3RoM18xc3Rfc3Q0ZzMhIX0=
+Press any key to continue . . .
+**************************************************
+ConsoleProcess: conhost.exe Pid: 2260
+Console: 0xff756200 CommandHistorySize: 50
+HistoryBufferCount: 1 HistoryBufferMax: 4
+OriginalTitle: C:\Users\SmartNet\Downloads\DumpIt\DumpIt.exe
+Title: C:\Users\SmartNet\Downloads\DumpIt\DumpIt.exe
+AttachedProcess: DumpIt.exe Pid: 796 Handle: 0x60
+----
+CommandHistory: 0x38ea90 Application: DumpIt.exe Flags: Allocated
+CommandCount: 0 LastAdded: -1 LastDisplayed: -1
+FirstCommand: 0 CommandCountMax: 50
+ProcessHandle: 0x60
+----
+Screen 0x371050 X:80 Y:300
+Dump:
+  DumpIt - v1.3.2.20110401 - One click memory memory dumper
+  Copyright (c) 2007 - 2011, Matthieu Suiche <http://www.msuiche.net>
+  Copyright (c) 2010 - 2011, MoonSols <http://www.moonsols.com>
+
+
+    Address space size:        1073676288 bytes (   1023 Mb)
+    Free space size:          24185389056 bytes (  23064 Mb)
+
+    * Destination = \??\C:\Users\SmartNet\Downloads\DumpIt\SMARTNET-PC-20191211-
+143755.raw
+
+    --> Are you sure you want to continue? [y/n] y
+    + Processing...
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ echo "ZmxhZ3t0aDFzXzFzX3RoM18xc3Rfc3Q0ZzMhIX0=" | base64 -d
+flag{th1s_1s_th3_1st_st4g3!!}
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 filescan | grep -i "Important.rar"
+Volatility Foundation Volatility Framework 2.6.1
+0x000000003fa3ebc0      1      0 R--r-- \Device\HarddiskVolume2\Users\Alissa Simpson\Documents\Important.rar
+0x000000003fac3bc0      1      0 R--r-- \Device\HarddiskVolume2\Users\Alissa Simpson\Documents\Important.rar
+0x000000003fb48bc0      1      0 R--r-- \Device\HarddiskVolume2\Users\Alissa Simpson\Documents\Important.rar
+
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000003fa3ebc0 -D . file.data
+Volatility Foundation Volatility Framework 2.6.1
+DataSectionObject 0x3fa3ebc0   None   \Device\HarddiskVolume2\Users\Alissa Simpson\Documents\Important.rar
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ ls
+Re_Draw.7z       MemoryDump_Lab1.raw  file.None.0xfffffa8001034450.dat   volatility
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ mv file.None.0xfffffa8001034450.dat Important.rar
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ rar x Important.rar
+
+RAR 7.00   Copyright (c) 1993-2024 Alexander Roshal   26 Feb 2024
+Trial version             Type 'rar -?' for help
+
+Archive comment:
+Password is NTLM hash(in uppercase) of Alissa's account passwd.
+
+
+Extracting from Important.rar
+
+Enter password (will not be echoed) for flag3.png:
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 hashdump
+Volatility Foundation Volatility Framework 2.6.1
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+SmartNet:1001:aad3b435b51404eeaad3b435b51404ee:4943abb39473a6f32c11301f4987e7e0:::
+HomeGroupUser$:1002:aad3b435b51404eeaad3b435b51404ee:f0fc3d257814e08fea06e63c5762ebd5:::
+Alissa Simpson:1003:aad3b435b51404eeaad3b435b51404ee:f4ff64c8baac57d22f22edc681055ba6:::
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ rar x Important.rar
+
+RAR 7.00   Copyright (c) 1993-2024 Alexander Roshal   26 Feb 2024
+Trial version             Type 'rar -?' for help
+
+Archive comment:
+Password is NTLM hash(in uppercase) of Alissa's account passwd.
+
+
+Extracting from Important.rar
+
+Enter password (will not be echoed) for flag3.png:
+
+Extracting  flag3.png                                                 OK
+All OK
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 pslist
+Volatility Foundation Volatility Framework 2.6.1
+Offset(V)          Name                    PID   PPID   Thds     Hnds   Sess  Wow64 Start                          Exit 
+------------------ -------------------- ------ ------ ------ -------- ------ ------ ------------------------------ ------------------------------
+0xfffffa8000ca0040 System                    4      0     80      570 ------      0 2019-12-11 13:41:25 UTC+0000        
+0xfffffa800148f040 smss.exe                248      4      3       37 ------      0 2019-12-11 13:41:25 UTC+0000        
+0xfffffa800154f740 csrss.exe               320    312      9      457      0      0 2019-12-11 13:41:32 UTC+0000        
+0xfffffa8000ca81e0 csrss.exe               368    360      7      199      1      0 2019-12-11 13:41:33 UTC+0000        
+0xfffffa8001c45060 psxss.exe               376    248     18      786      0      0 2019-12-11 13:41:33 UTC+0000        
+0xfffffa8001c5f060 winlogon.exe            416    360      4      118      1      0 2019-12-11 13:41:34 UTC+0000        
+0xfffffa8001c5f630 wininit.exe             424    312      3       75      0      0 2019-12-11 13:41:34 UTC+0000        
+0xfffffa8001c98530 services.exe            484    424     13      219      0      0 2019-12-11 13:41:35 UTC+0000        
+0xfffffa8001ca0580 lsass.exe               492    424      9      764      0      0 2019-12-11 13:41:35 UTC+0000        
+0xfffffa8001ca4b30 lsm.exe                 500    424     11      185      0      0 2019-12-11 13:41:35 UTC+0000        
+0xfffffa8001cf4b30 svchost.exe             588    484     11      358      0      0 2019-12-11 13:41:39 UTC+0000        
+0xfffffa8001d327c0 VBoxService.ex          652    484     13      137      0      0 2019-12-11 13:41:40 UTC+0000        
+0xfffffa8001d49b30 svchost.exe             720    484      8      279      0      0 2019-12-11 13:41:41 UTC+0000        
+0xfffffa8001d8c420 svchost.exe             816    484     23      569      0      0 2019-12-11 13:41:42 UTC+0000        
+0xfffffa8001da5b30 svchost.exe             852    484     28      542      0      0 2019-12-11 13:41:43 UTC+0000        
+0xfffffa8001da96c0 svchost.exe             876    484     32      941      0      0 2019-12-11 13:41:43 UTC+0000        
+0xfffffa8001e1bb30 svchost.exe             472    484     19      476      0      0 2019-12-11 13:41:47 UTC+0000        
+0xfffffa8001e50b30 svchost.exe            1044    484     14      366      0      0 2019-12-11 13:41:48 UTC+0000        
+0xfffffa8001eba230 spoolsv.exe            1208    484     13      282      0      0 2019-12-11 13:41:51 UTC+0000        
+0xfffffa8001eda060 svchost.exe            1248    484     19      313      0      0 2019-12-11 13:41:52 UTC+0000        
+0xfffffa8001f58890 svchost.exe            1372    484     22      295      0      0 2019-12-11 13:41:54 UTC+0000        
+0xfffffa8001f91b30 TCPSVCS.EXE            1416    484      4       97      0      0 2019-12-11 13:41:55 UTC+0000        
+0xfffffa8000d3c400 sppsvc.exe             1508    484      4      141      0      0 2019-12-11 14:16:06 UTC+0000        
+0xfffffa8001c38580 svchost.exe             948    484     13      322      0      0 2019-12-11 14:16:07 UTC+0000        
+0xfffffa8002170630 wmpnetwk.exe           1856    484     16      451      0      0 2019-12-11 14:16:08 UTC+0000        
+0xfffffa8001d376f0 SearchIndexer.          480    484     14      701      0      0 2019-12-11 14:16:09 UTC+0000        
+0xfffffa8001eb47f0 taskhost.exe            296    484      8      151      1      0 2019-12-11 14:32:24 UTC+0000        
+0xfffffa8001dfa910 dwm.exe                1988    852      5       72      1      0 2019-12-11 14:32:25 UTC+0000        
+0xfffffa8002046960 explorer.exe            604   2016     33      927      1      0 2019-12-11 14:32:25 UTC+0000        
+0xfffffa80021c75d0 VBoxTray.exe           1844    604     11      140      1      0 2019-12-11 14:32:35 UTC+0000        
+0xfffffa80021da060 audiodg.exe            2064    816      6      131      0      0 2019-12-11 14:32:37 UTC+0000        
+0xfffffa80022199e0 svchost.exe            2368    484      9      365      0      0 2019-12-11 14:32:51 UTC+0000        
+0xfffffa8002222780 cmd.exe                1984    604      1       21      1      0 2019-12-11 14:34:54 UTC+0000        
+0xfffffa8002227140 conhost.exe            2692    368      2       50      1      0 2019-12-11 14:34:54 UTC+0000        
+0xfffffa80022bab30 mspaint.exe            2424    604      6      128      1      0 2019-12-11 14:35:14 UTC+0000        
+0xfffffa8000eac770 svchost.exe            2660    484      6      100      0      0 2019-12-11 14:35:14 UTC+0000        
+0xfffffa8001e68060 csrss.exe              2760   2680      7      172      2      0 2019-12-11 14:37:05 UTC+0000        
+0xfffffa8000ecbb30 winlogon.exe           2808   2680      4      119      2      0 2019-12-11 14:37:05 UTC+0000        
+0xfffffa8000f3aab0 taskhost.exe           2908    484      9      158      2      0 2019-12-11 14:37:13 UTC+0000        
+0xfffffa8000f4db30 dwm.exe                3004    852      5       72      2      0 2019-12-11 14:37:14 UTC+0000        
+0xfffffa8000f4c670 explorer.exe           2504   3000     34      825      2      0 2019-12-11 14:37:14 UTC+0000        
+0xfffffa8000f9a4e0 VBoxTray.exe           2304   2504     14      144      2      0 2019-12-11 14:37:14 UTC+0000        
+0xfffffa8000fff630 SearchProtocol         2524    480      7      226      2      0 2019-12-11 14:37:21 UTC+0000        
+0xfffffa8000ecea60 SearchFilterHo         1720    480      5       90      0      0 2019-12-11 14:37:21 UTC+0000        
+0xfffffa8001010b30 WinRAR.exe             1512   2504      6      207      2      0 2019-12-11 14:37:23 UTC+0000        
+0xfffffa8001020b30 SearchProtocol         2868    480      8      279      0      0 2019-12-11 14:37:23 UTC+0000        
+0xfffffa8001048060 DumpIt.exe              796    604      2       45      1      1 2019-12-11 14:37:54 UTC+0000        
+0xfffffa800104a780 conhost.exe            2260    368      2       50      1      0 2019-12-11 14:37:54 UTC+0000        
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 memdump -p 2424 -D .
+Volatility Foundation Volatility Framework 2.6.1
+************************************************************************
+Writing mspaint.exe [  2424] to 2424.dmp
+shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ mv 2424.dmp 2424.dat
+```
+
+## Flags:
+```
+flag{th1s_1s_th3_1st_st4g3!!}
+flag{G00d_Boy_good_girl}
+flag{w3lL_3rd_stage_was_easy}
+```
+
+## Concepts learnt:
+- Through this challenge, I learned the basic workflow of digital memory forensics when it comes to interpretation using Volatility 
+- I learnt that Volatility is plugin-based memory dump analyser. Various plugind like `pslist`,`cmdline`,`hashdump`,`memdump`,`filescan`, etc, some of them requiring additional arguments and specifications
+- I figured out how to sequentially explore different parts of memory and carry out Forensic analysis on them. 
+ 
+  ***
