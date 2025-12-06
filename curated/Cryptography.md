@@ -217,14 +217,8 @@ Full flag should be: nite{1mp0r7_m0dul3?_1_4M_7h3_m0dul3}
 **The challenge required to recover the secret flag from a custom encryption scheme.**
 
 ## Solution:
-How the encryption code worked (what happened in the code): <br/>
-It basically did the following :  <br/>
-It Split the flag at nite{...} we had to recover the inside part. <br/>
-Then it processed the flag in 2-byte blocks. <br/>
-It Used a secret 2-byte key ks=os.urandom(2).
- <br/>
+The encryption had rotated every byte by its index and then XORed the data with an 8-byte repeating key. To reverse this, I first undid the rotation on just the first eight bytes so that the PNG header became partially visible again. Since a valid PNG header is fixed and known, I compared the rotated bytes against the standard header to extract the XOR key by simply XORing the two. Once the key was recovered, I applied it sliding across the entire file to undo the original XOR step. After that, I reversed the index-based rotation on all bytes to restore the true PNG data. Finally, because the PNG chunks were corrupted after decryption, I recalculated all CRC values for every chunk so the file became valid and could be opened normally. The final decrypted image was saved as final.png.
 <br/>
-
 
 **Python decryption code**
 ```
@@ -322,7 +316,6 @@ except Exception as e:
 print("Done. Try opening", OUT_FIXED)
 
 ```
-
 **Recovered PNG:** 
 <br/>
 <img width="250" height="250" alt="quote_decrypted_fixed" src="https://github.com/user-attachments/assets/580c3c37-a8bc-4a03-81b7-81e69e4de9fd" />
@@ -333,22 +326,45 @@ print("Done. Try opening", OUT_FIXED)
 ```
 
 ## Concepts learnt:
-- 
+- I learned how index-based byte rotations can be reversed by applying the opposite rotation, and how known file signatures like the PNG header can be used to extract an XOR key simply by comparing expected bytes to encrypted ones. I also understood how sliding XOR encryption can be undone by applying the same key across the whole file in reverse, and how PNG files require correct CRC values for each chunk, which can be recomputed after decryption to restore the file to a valid state.
 
 # 4. Willy’s Chocolate Experience
 
 **The challenge required to analyze a custom cryptographic scheme.**
 
 ## Solution:
-The code given encrypted 
-How the encryption code worked : <br/>
-It basically did the following :  <br/>
+The code that I have solved this challenge with transformed the flag into a large modulo-p number by evaluating an exponential function at the “ticket” integer.
 
+How the encryption code worked: <br/>
+It basically did the following: <br/>
+It defined
+    f(m) = 13^m + 37^m (mod p) <br/>
+First, the flag bytes were converted into a large integer called ticket. Then the program computed a list containing:
+    f(0), f(1), f(2), ..., f(ticket), <br/>
+and finally kept only the last two values produced:
+    f(ticket-1) and f(ticket). <br/>
+These two outputs, called leftover, were the only information available. The challenge was to recover the hidden exponent ticket from just these two values. <br/>
 
 Logic to reverse(decrypt) it : <br/>
+Let the two leftover values be: <br/>
+    X = f(ticket-1) and Y = f(ticket) <br/>
+We note that:
+    f(n) = 13^n + 37^n <br/>
+    f(n-1) = 13^(n-1) + 37^(n-1) <br/>
 
+The key observation is that dividing them gives a structured ratio involving (13/37)^(n-1). Using modular inverses, we compute: <br/>
+    s = Y * X⁻¹ (mod p) <br/>
+and rearrange the algebra to isolate: <br/>
+    t = (13/37)^(n-1) (mod p) <br/>
 
-I used GPT to write assemble this logic and write the code in python.  <br/>
+Once we have this value, recovering n-1 becomes a discrete logarithm problem. Since p−1 factors into many small primes, a Pohlig–Hellman dlog solver can efficiently compute: <br/>
+    k = log_r(t) where r = 13 * 37⁻¹ (mod p) <br/>
+Thus:
+    ticket = k + 1 <br/>
+
+Finally, this recovered integer is converted back into bytes using long_to_bytes(ticket) to obtain the original flag. <br/>
+
+I used GPT to assemble the number-theoretic logic and generate the working Python solver. <br/>
 <br/>
 **Python decryption code**
 ```
@@ -388,6 +404,6 @@ nite{g0ld3n_t1ck3t_t0_gl4sg0w}
 ```
 
 ## Concepts learnt:
-- 
+- I learned how modular exponentiation with large primes can leak information when outputs are related, and how taking ratios of consecutive values reveals structure that can be simplified using modular inverses. This led to the idea of recovering the hidden exponent through a discrete logarithm. I also learned that when the modulus has a factorable order, the Pohlig–Hellman method can efficiently solve this discrete log, making the secret integer recoverable. Finally, I learned how to convert the recovered exponent back into bytes to reconstruct the original flag.
   ***
 
