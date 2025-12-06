@@ -222,27 +222,27 @@ GCTF{m0zarella_f1ref0x_p4ssw0rd}
 
 
 ## Solution:
-<br/>
+
 After extracting the memory dump file from the .7z file and learning a bit about volatility 2 commands I first started by identification of the OS to find the right profile. This was done using the command : `volatility -f MemoryDump_Lab1.raw imageinfo`.
-<br/>
+
 It was found that the profile was - `Win7SP1x64`. this would be useful to run the system targeted volatility commands.
-<br/>
+
 This was followed by the assessment of all the processes that wewre going on before the system closure, using - `volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 pslist`
 The `pslist` command lists all the processes.
-<br/>
+
 The processes of mspaint and WinRaR fairly stood out to me.
 So I investigated further. First the WinRaR process :
 the `cmdline` plugin shows the exact command-line used to start a process and the pid specifies the process. It revealed a path to a .rar file.
 To investigate it further, I ran the `consoles` plugin.
 In the output was what seemed to be a base64 encoded string, which I decoded and turned out to be the first flag!
-<br/>
+
 But the Important.rar file still drew attention, so the `filescan` plugin was used to extract details about the file, like offset. Once the offset was found, I dumped its contents onto a file on my system and saved it as `Important.rar`. Once I started extracting the .rar file, it showed up with a hit for flag 3. The prompt asked for a password- which was the NTLM hash of the account. I found that using `volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 hashdump`, converted it to uppercase and got a `flag3.png` file. <br/>
 <img width="500" height="500" alt="flag3" src="https://github.com/user-attachments/assets/0785c13d-ab5d-4554-a460-3e2e53b2b595" />
-<br/>
+
 Now only the second falg remained hidden, now we explore the mspaint side of the memory dump.
 I found out the PID of the mspaint process and dumped its contents in a file on my system by using the commands: `volatility -f MemoryDump_Lab1.raw --profile=Win7SP1x64 memdump -p 2424 -D .` . Then i explored multiple ways to view this data or the message encrypted (like strings ertc.) and finally stumbled upon GIMP.
 Manipulating the file in GIMP gave the final flag : 
-<br/>
+
 **GIMP INTERFACE :**
 <img width="1920" height="1128" alt="Screenshot 2025-12-05 155111" src="https://github.com/user-attachments/assets/61adda4f-25a3-4b98-9220-445bcc312df6" />
 <br/>
