@@ -324,6 +324,7 @@ print("Done. Try opening", OUT_FIXED)
 ```
 
 **Recovered PNG:** 
+<br/>
 <img width="250" height="250" alt="quote_decrypted_fixed" src="https://github.com/user-attachments/assets/580c3c37-a8bc-4a03-81b7-81e69e4de9fd" />
 
 ## Flag:
