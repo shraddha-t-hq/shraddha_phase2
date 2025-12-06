@@ -336,7 +336,7 @@ print("Done. Try opening", OUT_FIXED)
 ## Concepts learnt:
 - 
 
-# 1. All Signs Allign
+# 4. Willy’s Chocolate Experience
 
 **The challenge required to analyze a custom cryptographic scheme.**
 
