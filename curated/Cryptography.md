@@ -427,7 +427,7 @@ nite{g0ld3n_t1ck3t_t0_gl4sg0w}
   ***
 
 
-# 4. spAES Oddity
+# 5. spAES Oddity
 
 **The challenge required me to understanding the AES encryption and decrypt the flag using input/output sequence of the oracle.**
 
