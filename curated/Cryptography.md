@@ -426,3 +426,179 @@ nite{g0ld3n_t1ck3t_t0_gl4sg0w}
 - I learned how modular exponentiation with large primes can leak information when outputs are related, and how taking ratios of consecutive values reveals structure that can be simplified using modular inverses. This led to the idea of recovering the hidden exponent through a discrete logarithm. I also learned that when the modulus has a factorable order, the Pohlig–Hellman method can efficiently solve this discrete log, making the secret integer recoverable. Finally, I learned how to convert the recovered exponent back into bytes to reconstruct the original flag.
   ***
 
+
+# 4. spAES Oddity
+
+**The challenge required me to understanding the AES encryption and decrypt the flag using input/output sequence of the oracle.**
+
+## Solution:
+
+```
+from pwn import *
+import string
+
+# --- Configuration ---
+HOST = "spaesoddity.nitephase.live"  
+PORT =  45673    
+BLOCK_SIZE = 16
+
+# Based on regex: [-_A-Da-z0-4] + }
+charset = string.ascii_lowercase + "ABCD" + "0123456789" + "-_}"
+
+def get_oracle_output(io, payload):
+    """
+    Sends payload to oracle.
+    Handles the Odd-length constraint automatically by appending a dummy byte
+    if we are in the 'verification' phase (sending full blocks).
+    """
+    # The payload we send MUST be odd length.
+    # If we are sending a guess that fills a block (even), we append a dummy byte.
+    msg = payload
+    if len(msg) % 2 == 0:
+        msg += b"A" 
+        
+    io.sendlineafter(b'input in hex:', msg.hex().encode())
+    
+    response = io.recvline().strip()
+    if b"Major Tom" in response:
+        return None
+        
+    return bytes.fromhex(response.decode())
+
+def solve():
+    io = remote(HOST, PORT)
+    
+    # We start with the known prefix
+    flag = b"nite{"
+    print(f"[+] Starting Attack. Known: {flag}")
+
+    # We solve 2 bytes at a time
+    while b"}" not in flag:
+        
+        # 1. Calculate Padding
+        # We want [PAD][FLAG][c1][c2] to equal 16 bytes exactly.
+        # len(pad) + len(flag) + 2 = 16
+        pad_len = (16 - (len(flag) + 2) % 16) % 16
+        
+        # Verify our logic holds (Pad must be odd)
+        if pad_len % 2 == 0:
+            print("[-] Critical alignment error. This strategy requires Odd 'known' length.")
+            break
+
+        prefix = b"A" * pad_len
+        
+        # 2. Get Target Block
+        # We send just the prefix. The server appends the flag.
+        # Structure: [Prefix] [Flag_Known] [Unknown1] [Unknown2] | [Rest...]
+        ciphertext = get_oracle_output(io, prefix)
+        
+        # Calculate which block contains our target
+        # (pad + known + 2 bytes) is exactly a multiple of 16
+        target_block_index = (len(prefix) + len(flag) + 2) // 16 - 1
+        target_block = ciphertext[target_block_index*16 : (target_block_index+1)*16]
+
+        print(f"[*] cracking next 2 bytes... (Pad: {pad_len}, Block: {target_block_index})")
+        
+        found_pair = False
+        
+        # 3. Brute Force Pair
+        # Complexity: ~39 * 39 = 1521 requests (very fast)
+        for c1 in charset:
+            for c2 in charset:
+                guess_chars = (c1 + c2).encode()
+                
+                # Construct the guess payload
+                # Note: This payload is EXACTLY block-aligned (Even length).
+                # The get_oracle_output function will append a dummy byte to make it Odd.
+                guess_payload = prefix + flag + guess_chars
+                
+                guess_ct = get_oracle_output(io, guess_payload)
+                
+                # Extract the corresponding block
+                guess_block = guess_ct[target_block_index*16 : (target_block_index+1)*16]
+                
+                if guess_block == target_block:
+                    flag += guess_chars
+                    print(f"[+] Found: {flag}")
+                    found_pair = True
+                    break
+            
+            if found_pair:
+                break
+        
+        if not found_pair:
+            print("[-] Failed to find pair. Check charset or alignment.")
+            break
+
+    print(f"\n[SUCCESS] Final Flag: {flag.decode()}")
+    io.close()
+
+if __name__ == "__main__":
+    solve()
+```
+
+**Terminal working:** 
+
+```
+(pwntools) shraddhatiwari@LAPTOP-F2C51A3F:~/src$ nano aes.py
+(pwntools) shraddhatiwari@LAPTOP-F2C51A3F:~/src$ python3 aes.py
+[+] Opening connection to spaesoddity.nitephase.live on port 45673: Done
+[+] Starting Attack. Known: b'nite{'
+[*] cracking next 2 bytes... (Pad: 9, Block: 0)
+[+] Found: b'nite{D4'
+[*] cracking next 2 bytes... (Pad: 7, Block: 0)
+[+] Found: b'nite{D4v1'
+[*] cracking next 2 bytes... (Pad: 5, Block: 0)
+[+] Found: b'nite{D4v1d_'
+[*] cracking next 2 bytes... (Pad: 3, Block: 0)
+[+] Found: b'nite{D4v1d_B0'
+[*] cracking next 2 bytes... (Pad: 1, Block: 0)
+[+] Found: b'nite{D4v1d_B0w1'
+[*] cracking next 2 bytes... (Pad: 15, Block: 1)
+[+] Found: b'nite{D4v1d_B0w13-'
+[*] cracking next 2 bytes... (Pad: 13, Block: 1)
+[+] Found: b'nite{D4v1d_B0w13-s_'
+[*] cracking next 2 bytes... (Pad: 11, Block: 1)
+[+] Found: b'nite{D4v1d_B0w13-s_0d'
+[*] cracking next 2 bytes... (Pad: 9, Block: 1)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds'
+[*] cracking next 2 bytes... (Pad: 7, Block: 1)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w'
+[*] cracking next 2 bytes... (Pad: 5, Block: 1)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r'
+[*] cracking next 2 bytes... (Pad: 3, Block: 1)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r3_'
+[*] cracking next 2 bytes... (Pad: 1, Block: 1)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r3_n3'
+[*] cracking next 2 bytes... (Pad: 15, Block: 2)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r3_n3v3'
+[*] cracking next 2 bytes... (Pad: 13, Block: 2)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_'
+[*] cracking next 2 bytes... (Pad: 11, Block: 2)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_1n'
+[*] cracking next 2 bytes... (Pad: 9, Block: 2)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_1n_y'
+[*] cracking next 2 bytes... (Pad: 7, Block: 2)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_1n_y0u'
+[*] cracking next 2 bytes... (Pad: 5, Block: 2)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_1n_y0ur_'
+[*] cracking next 2 bytes... (Pad: 3, Block: 2)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_1n_y0ur_f4'
+[*] cracking next 2 bytes... (Pad: 1, Block: 2)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_1n_y0ur_f4v0'
+[*] cracking next 2 bytes... (Pad: 15, Block: 3)
+[+] Found: b'nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_1n_y0ur_f4v0r}'
+
+[SUCCESS] Final Flag: nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_1n_y0ur_f4v0r}
+[*] Closed connection to spaesoddity.nitephase.live port 45673
+
+```
+
+## Flag:
+```
+nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_1n_y0ur_f4v0r}
+```
+
+## Concepts learnt:
+- 
+  ***
