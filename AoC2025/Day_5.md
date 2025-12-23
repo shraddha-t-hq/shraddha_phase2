@@ -6,7 +6,6 @@ The objective was to identify how improper authorization checks allow users to a
 Through a series of increasingly disguised examples, the challenge demonstrated how IDOR vulnerabilities can appear in real-world applications and how attackers can exploit them to perform horizontal privilege escalation.
 
 ## Learnings
-It covered the following :
 From this challenge, I learned:
 - What **IDOR (Insecure Direct Object Reference)** actually is at a practical level.
 - The difference between authentication (who you are) and authorization (what you’re allowed to access)
