@@ -20,6 +20,7 @@ From this challenge, I learned:
   
 ## My Solve 
 To administer suspecious activity on a particular application on 21st, I opened the SOFTWARE hive and followed this path : *Microsoft -> Windows -> Current Version -> Uninstall*
+<br/>
 There I found the application that was tampered with on 21st.
 <img width="1920" height="1064" alt="Screenshot 2025-12-22 173950" src="https://github.com/user-attachments/assets/594008c6-4dff-4d98-837f-d60c5825c8ed" />
 
@@ -28,6 +29,7 @@ There I found the program/process name containing DroneManager.
 <img width="1920" height="1065" alt="Screenshot 2025-12-22 174308" src="https://github.com/user-attachments/assets/40bd7183-ef31-4b82-90a0-685e830a1751" />
 
 I opened the SOFTWARE hive again and followed this path : *Microsoft -> Windows -> Current Version -> Run*
+<br/>
 There I found the drone_helper command, the `Data` column had the answer.
 <img width="1920" height="1066" alt="Screenshot 2025-12-22 174608" src="https://github.com/user-attachments/assets/add84d95-e339-4b02-a541-b62558b553a0" />
 
