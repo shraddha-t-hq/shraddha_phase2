@@ -31,7 +31,7 @@ rule TBFC_Message_Hunt
 }
 
 ```
-<br/>
+
 **Terminal Working :**
 ```
 ubuntu@tryhackme:~$ nano tbfc_message.yar
