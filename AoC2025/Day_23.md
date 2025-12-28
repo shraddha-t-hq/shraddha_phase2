@@ -19,7 +19,7 @@ From this challenge, I learned:
 ## My Solve 
 Following the instructions provided, the following was my approach to solve the challenge and answer each question:
 **Terminal Working for first answer:**
-```
+```ruby
 ubuntu@tryhackme:~$ aws sts get-caller-identity
 {
     "UserId": "neungp5sjr1590tufxah",
@@ -34,13 +34,13 @@ I used the following command to list the policy : `aws iam list-user-policies --
  `Sir CarrotbanePolicy` was the answer.
 
 **Terminal Working for fourth answer:**
-```
+```ruby
 <img width="1920" height="1075" alt="Screenshot 2025-12-24 123042" src="https://github.com/user-attachments/assets/fa577048-8353-474e-9cfb-0b50f47465d8" />
 
 ```
 
 **Terminal Working for fifth answer:**
-```
+```ruby
 ubuntu@tryhackme:~$ aws sts assume-role --role-arn arn:aws:iam::123456789012:role/bucketmaster --role-session-name tbfc
 {
     "Credentials": {
