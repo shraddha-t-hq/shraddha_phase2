@@ -30,15 +30,15 @@ I then reviewed related high-severity incidents such as `Linux PrivEsc – Sudo 
 After identifying related alerts, I moved into Advanced Hunting and queried the Syslog_CL table using KQL, filtering(and modifying) by specific hosts such as `app-02`, `websrv-01`, `storage-01`, and `app-01`. 
 The logs showed clear signs of malicious behaviour, including the insertion of the kernel module `malicious_mod.ko`, suspicious commands executed by compromised users, and privilege escalation actions like modifying /etc/shadow and adding users to sudoers.
 <br/>
-> **setting host_s to websrv-01 :**
+**setting host_s to websrv-01 :**
 <br/>
 <img width="1920" height="1066" alt="Screenshot 2025-12-22 194107" src="https://github.com/user-attachments/assets/c9089e72-5383-413b-8e37-a3b0b4a8d2db" />
 <br/>
-> **setting host_s to storage-01 :**
+**setting host_s to storage-01 :**
 <br/>
 <img width="1920" height="1074" alt="Screenshot 2025-12-22 195301" src="https://github.com/user-attachments/assets/c04272c4-3abb-4e49-a008-ad7cf4879cef" />
 <br/>
-> **setting host_s to app-01 :**
+**setting host_s to app-01 :**
 <br/>
 <img width="1920" height="1059" alt="Screenshot 2025-12-22 195414" src="https://github.com/user-attachments/assets/362d8a15-264d-4a76-9b2d-9cb71ab30a48" />
 
