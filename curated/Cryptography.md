@@ -98,7 +98,7 @@ I used GPT to assemble the mathematical steps, derive the inverse element, and w
 
 
 **Python decryption code**
-```
+```ruby
 #!/usr/bin/env python3
 # solve.py
 # Solver for the "Num" field-multiplication challenge described above.
@@ -212,7 +212,7 @@ if __name__ == "__main__":
 ```
 
 **Terminal working:** 
-```
+```ruby
 shraddhatiwari@LAPTOP-F2C51A3F:~$ nano residue.py
 shraddhatiwari@LAPTOP-F2C51A3F:~$ python3 residue.py
 Recovered key (ks) = Num([60, 6])
@@ -240,7 +240,7 @@ The encryption had rotated every byte by its index and then XORed the data with 
 <br/>
 
 **Python decryption code**
-```
+```ruby
 #!/usr/bin/env python3
 # decrypt_with_recovered_key.py
 # Place this in the same folder as quote.png.enc and run:
@@ -386,7 +386,7 @@ Finally, this recovered integer is converted back into bytes using long_to_bytes
 I used GPT to assemble the number-theoretic logic and generate the working Python solver. <br/>
 <br/>
 **Python decryption code**
-```
+```ruby
 from Crypto.Util.number import *
 from sympy import discrete_log
 
@@ -475,7 +475,7 @@ Since AES is deterministic, block equality confirms correct guesses
 </p>
 
 **Python solver script :**
-```
+```ruby
 from pwn import *
 import string
 
