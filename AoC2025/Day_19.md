@@ -14,10 +14,10 @@ From this challenge, I learned:
 - How challenge authors embed logic and safety checks into remediation tools
 
 ## My Solve 
-I first reviewed the provided reconnaissance.py script to understand the current state of the system. The script connects to the Modbus service and reads key holding registers and coils to determine what configuration is active. 
+I first reviewed the provided `reconnaissance.py` script to understand the current state of the system. The script connects to the Modbus service and reads key holding registers and coils to determine what configuration is active. 
 By running this script, it became clear that the system had been altered to deliver incorrect payloads and that protective logic was in place to prevent unsafe changes.
 
-Instead of manually modifying any PLC values, I followed the intended remediation path by executing the restore_christmas.py script.
+Instead of manually modifying any PLC values, I followed the intended remediation path by executing the `restore_christmas.py` script.
 This script safely resets the malicious configuration by restoring the correct delivery settings and re-enabling required safeguards in the proper order. 
 Once the system state was successfully restored, the script output displayed the flag, confirming that Christmas deliveries had been recovered.
 
