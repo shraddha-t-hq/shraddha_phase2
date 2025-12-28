@@ -20,7 +20,7 @@ Each image contained a fragment of the hidden message such as `TBFC:Find`, `TBFC
 By combining these fragments in order, I reconstructed the full message sent by McSkidy: `“Find me in HopSec Island.”`<br/>
 <br/>
 **Example of one script written for the first challenge :**
-```
+```ruby
 rule TBFC_Message_Hunt
 {
     strings:
@@ -33,7 +33,7 @@ rule TBFC_Message_Hunt
 ```
 
 **Terminal Working :**
-```
+```ruby
 ubuntu@tryhackme:~$ nano tbfc_message.yar
 ubuntu@tryhackme:~$ cd /home/ubuntu/Downloads/easter 
 ubuntu@tryhackme:~/Downloads/easter$ yara -r -s tbfc_message.yar /home/ubuntu/Downloads/easter
