@@ -14,7 +14,7 @@ Then I used the extracted passphrase in steghide to extract the flag and write t
 
 **Terminal working:** 
 
-```
+```ruby
 shraddhatiwari@LAPTOP-F2C51A3F:~$ stegseek sakamoto.jpg
 StegSeek 0.6 - https://github.com/RickdeJager/StegSeek
 
@@ -93,7 +93,7 @@ Then I decoded this data by putting it into a .rar file and extracting using the
 
 
 **Terminal working:**
-```
+```ruby
 shraddhatiwari@LAPTOP-F2C51A3F:~$ echo "526172211a07010094ceedc121040000010f644537b9278a61e25503b4957506e3674391aa0766e843dca3d75f52dc08f7774f6470a0a32680ccd66b612ae47347d80e85f7a2d1907178728fa65de05fe2ec158a6fb40be196b2fe5b2abbe7f1568c445080a86b1b49eebe54ef777e1886c796fabafd16e51baaa431b1c0ed3a6f3a0700a6c34b4f64ea7103e939aff7a95a9e9b2ea0b87cbc186159a252d0048f5b1da871387f8f930fbde37df8dd1e41a8215c00b045e59f374c21e67c9f1dd02fb983ee101784fadaa92929ed7b6a61c4da9d9ffa7487f7e6853dadd1ebf40b1998b716f0ab41d19d1b6a25000c58c2fc96f9b0c4cdcfa7ee79b2ef926b051dff7132a4c4a3f84b75dbd9760b67fba3cb5c797bd7bdf1d7de52a94a7f" | xxd -r -p > rawr.rar
 shraddhatiwari@LAPTOP-F2C51A3F:~$ ls | grep rawr.rar
 rawr.rar
@@ -151,7 +151,7 @@ GIC2024 --> AppData --> Roaming --> Mozilla --> Firefox --> Profiles --> j4gjesg
 Then I used a firefox decoder from the following github repository : [https://github.com/unode/firefox_decrypt.git]
 This was used to decode the passwords from the profile and extract the flag. The following is the terminal working : 
 **Terminal working:** 
-```
+```ruby
 shraddhatiwari@LAPTOP-F2C51A3F:~$ cd ./nt
 shraddhatiwari@LAPTOP-F2C51A3F:~/nt$ git clone https://github.com/unode/firefox_decrypt.git
 Cloning into 'firefox_decrypt'...
@@ -249,7 +249,7 @@ Manipulating the file in GIMP gave the final flag :
 
 **Terminal working:** 
 
-```
+```ruby
 shraddhatiwari@LAPTOP-F2C51A3F:~$ cd ./vol
 shraddhatiwari@LAPTOP-F2C51A3F:~/vol$ 7z x Re_Draw.7z
 
