@@ -456,7 +456,7 @@ Since AES is deterministic, block equality confirms correct guesses
 
 
 **Step-by-step logic:**
-<p style="text-align:center">
+<p align="center">
                                                             Start with the known prefix: `nite{`
 <br/>                                                                      |
 <br/>                         Add padding so that (padding + known_flag + 2 bytes) aligns perfectly to a 16-byte AES block
@@ -473,6 +473,7 @@ Since AES is deterministic, block equality confirms correct guesses
 <br/>                                       5. The odd-length restriction was bypassed by appending a dummy byte
 
 </p>
+
 **Python solver script :**
 ```
 from pwn import *
