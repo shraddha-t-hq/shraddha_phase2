@@ -20,7 +20,7 @@ Then I Analysed the RITA registry to get answers to all questions :
 To solve the first question it was just required to count the number of hosts.
 Scrolling through them the highest number of connections was found to be 40.
 <img width="1920" height="1070" alt="Screenshot 2025-12-24 121235" src="https://github.com/user-attachments/assets/918c120c-7d92-427c-a90c-dca1e0d1555d" />
-I used the following payload to filter through the connections according to the criterion given :
+I used the following payload to filter through the connections according to the criterion given :</br>
 `dst:rabbithole.malhare.net beacon:>=70 sort:duration-desc`
 <img width="1920" height="1128" alt="Screenshot 2025-12-24 121536" src="https://github.com/user-attachments/assets/8996e8ab-5cf6-4381-81e7-78452cbb8c78" />
 
