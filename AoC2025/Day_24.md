@@ -11,14 +11,15 @@ I learned how cookies are issued and reused to maintain sessions, how brute-forc
 can be trivially bypassed. It also reinforced how higher-level tools such as Burp Suite and Hydra are built on these same basic HTTP principles.
 
 ## My Solve 
-I began by using cURL to send a basic HTTP GET request to the target server, confirming connectivity and identifying that the application expected a `POST` request for authentication. 
-I then submitted valid credentials (admin:admin) to the `/post.php` endpoint, successfully receiving the authentication flag.
-To understand session handling, I inspected HTTP response headers and observed the Set-Cookie directive, after which I saved the issued session cookie and replayed it in a subsequent request to `/cookie.php`, resulting in authenticated access and a second flag.
-Next, I automated a brute-force attack against the /bruteforce.php endpoint using a bash loop that iterated through a wordlist and detected a successful login based on response content, revealing the correct admin password.
+I began by using cURL to send a basic HTTP GET request to the target server, confirming connectivity and identifying that the application expected a `POST` request for authentication. </br>
+I then submitted valid credentials (admin:admin) to the `/post.php` endpoint, successfully receiving the authentication flag.</br>
+To understand session handling, I inspected HTTP response headers and observed the Set-Cookie directive, after which I saved the issued session cookie and replayed it in a subsequent request to `/cookie.php`, resulting in authenticated access and a second flag.</br>
+Next, I automated a brute-force attack against the /bruteforce.php endpoint using a bash loop that iterated through a wordlist and detected a successful login based on response content, revealing the correct admin password.</br>
 Finally, I made a request with a custom User-Agent string, demonstrating how client-side header filtering can be trivially circumvented and obtaining the final flag.
-<br/>
+
+
 **Terminal Working**
-```
+```ruby
 root@ip-10-49-154-84:~# curl http://10.49.172.37/
 Welcome to the cURL practice server!
 Try sending a POST request to /post.php
