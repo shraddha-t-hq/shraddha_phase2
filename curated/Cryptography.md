@@ -457,19 +457,19 @@ Since AES is deterministic, block equality confirms correct guesses
 
 **Step-by-step logic:**
                                                             Start with the known prefix: `nite{`
-                                                                           |
-                            Add padding so that (padding + known_flag + 2 bytes) aligns perfectly to a 16-byte AES block
-                                                                           |
-                                         Send only padding to the oracle to capture the target ciphertext block
-                                                                           |
-                                                       Brute-force all possible character pairs 
-                                                                           |
-                                                                    For each guess:
-                                                    1.  Send [padding + known_flag + guessed_pair]
-                                            2.  Compare the resulting ciphertext block with the target block
-                                                     3.  If blocks match → guessed pair is correct
-                                                   4. Append the correct bytes and repeat until } is found
-                                            5. The odd-length restriction was bypassed by appending a dummy byte
+<br/>                                                                      |
+<br/>                         Add padding so that (padding + known_flag + 2 bytes) aligns perfectly to a 16-byte AES block
+<br/>                                                                      |
+<br/>                                   Send only padding to the oracle to capture the target ciphertext block
+<br/>                                                                      |
+<br/>                                                    Brute-force all possible character pairs 
+<br/>                                                                      |
+<br/>                                                               For each guess:
+<br/>                                              1.  Send [padding + known_flag + guessed_pair]
+<br/>                                      2.  Compare the resulting ciphertext block with the target block
+<br/>                                                3.  If blocks match → guessed pair is correct
+<br/>                                            4. Append the correct bytes and repeat until } is found
+<br/>                                       5. The odd-length restriction was bypassed by appending a dummy byte
 
 
 **Python solver script :**
