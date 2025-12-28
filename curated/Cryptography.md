@@ -46,7 +46,7 @@ print(flag)
 
 **Terminal working:** 
 
-```
+```ruby
 shraddhatiwari@LAPTOP-F2C51A3F:~$ cd ./asi
 shraddhatiwari@LAPTOP-F2C51A3F:~/asi$ nano ASI.py
 shraddhatiwari@LAPTOP-F2C51A3F:~/asi$ python3 ASI.py
@@ -337,8 +337,9 @@ print("Done. Try opening", OUT_FIXED)
 ```
 **Recovered PNG:** 
 <br/>
+<p align="centre">
 <img width="250" height="250" alt="quote_decrypted_fixed" src="https://github.com/user-attachments/assets/580c3c37-a8bc-4a03-81b7-81e69e4de9fd" />
-
+</p>
 ## Flag:
 ```
  nite{to_b3_X0R_n0t_t0_b3333}
@@ -410,7 +411,7 @@ print("Recovered flag =", long_to_bytes(ticket))
 
 **Terminal working:** 
 
-```
+```ruby
 shraddhatiwari@LAPTOP-F2C51A3F:~$ rm ticket.py && nano ticket.py
 shraddhatiwari@LAPTOP-F2C51A3F:~$ python3 ticket.py
 Recovered ticket = 762035150520137567051383230813374869523369672000904743873872089989543805
@@ -581,7 +582,7 @@ if __name__ == "__main__":
 
 **Terminal working:** 
 
-```
+```ruby
 (pwntools) shraddhatiwari@LAPTOP-F2C51A3F:~/src$ nano aes.py
 (pwntools) shraddhatiwari@LAPTOP-F2C51A3F:~/src$ python3 aes.py
 [+] Opening connection to spaesoddity.nitephase.live on port 45673: Done
@@ -645,6 +646,6 @@ nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_1n_y0ur_f4v0r}
 - AES is a deterministic block cipher: identical plaintext blocks produce identical ciphertext blocks
 - How block alignment can be abused in encryption oracles
 - Practical implementation of a byte-at-a-time ECB-style attack
-- How input constraints (like odd-length restrictions) can often be           bypassed and exploited instead of blocking attacks
+- How input constraints (like odd-length restrictions) can often be bypassed and exploited instead of blocking attacks
 
   ***
