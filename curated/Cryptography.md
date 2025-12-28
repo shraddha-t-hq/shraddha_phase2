@@ -432,6 +432,37 @@ nite{g0ld3n_t1ck3t_t0_gl4sg0w}
 **The challenge required me to understanding the AES encryption and decrypt the flag using input/output sequence of the oracle.**
 
 ## Solution:
+The service acted as an AES encryption oracle.
+It accepted user-controlled input (in hex), appended the secret flag internally, and returned the AES-encrypted ciphertext.
+
+However, there was a twist:
+The input must always be of odd length
+AES works on 16-byte blocks
+This odd-length constraint caused predictable alignment issues that could be abused
+How the encryption worked (observed behavior):
+The server encrypted:
+[user_input || flag]
+AES was used in ECB-like behavior (same plaintext block → same ciphertext block)
+The oracle rejected even-length inputs, but this was bypassed by appending a dummy byte
+Core idea of the attack:
+Recover the flag 2 bytes at a time
+Carefully choose padding so that:
+
+[PAD][KNOWN_FLAG][UNKNOWN_2_BYTES] = exactly 16 bytes
+
+When two guessed bytes are correct, the resulting AES block matches the target block
+Since AES is deterministic, block equality confirms correct guesses
+Step-by-step logic:
+Start with the known prefix: nite{
+Add padding so that (padding + known_flag + 2 bytes) aligns perfectly to a 16-byte AES block
+Send only padding to the oracle to capture the target ciphertext block
+Brute-force all possible character pairs (~1500 combinations)
+For each guess:
+Send [padding + known_flag + guessed_pair]
+Compare the resulting ciphertext block with the target block
+If blocks match → guessed pair is correct
+Append the correct bytes and repeat until } is found
+The odd-length restriction was bypassed by appending a dummy byte
 
 ```
 from pwn import *
