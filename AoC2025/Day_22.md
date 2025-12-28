@@ -1,4 +1,4 @@
-# IDOR - Santa’s Little IDOR
+# C2 Detection - Command & Carol
 
 ## Challenge Overview
 This challenge focused on using **RITA (Real Intelligence Threat Analytics)** to detect command-and-control (C2) activity from captured network traffic. 
