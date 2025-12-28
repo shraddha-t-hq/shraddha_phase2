@@ -20,7 +20,7 @@ All recovered bits are concatenated. Finally bitstring to is converted to an int
 I used GPT to write assemble this logic and write the code in python.  <br/>
 <br/>
 **Python decryption code**
-```
+```ruby
 from Crypto.Util.number import long_to_bytes
 
 p=9129026491768303016811207218323770273047638648509577266210613478726929333106121387323539916009107476349319902011390210650434835260358014251332047605739279
