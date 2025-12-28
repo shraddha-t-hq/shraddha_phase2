@@ -432,38 +432,47 @@ nite{g0ld3n_t1ck3t_t0_gl4sg0w}
 **The challenge required me to understanding the AES encryption and decrypt the flag using input/output sequence of the oracle.**
 
 ## Solution:
-The service acted as an AES encryption oracle.
+The service acted as an **AES encryption oracle**.
 It accepted user-controlled input (in hex), appended the secret flag internally, and returned the AES-encrypted ciphertext.
 
 However, there was a twist:
-The input must always be of odd length
-AES works on 16-byte blocks
-This odd-length constraint caused predictable alignment issues that could be abused
-How the encryption worked (observed behavior):
-The server encrypted:
-[user_input || flag]
-AES was used in ECB-like behavior (same plaintext block → same ciphertext block)
-The oracle rejected even-length inputs, but this was bypassed by appending a dummy byte
-Core idea of the attack:
-Recover the flag 2 bytes at a time
-Carefully choose padding so that:
+- The input must always be of odd length
+- AES works on 16-byte blocks
+- This odd-length constraint caused predictable alignment issues that could be abused
 
-[PAD][KNOWN_FLAG][UNKNOWN_2_BYTES] = exactly 16 bytes
+**How the encryption worked :**
+- The server encrypted: [user_input || flag]
+- AES was used in ECB-like behavior (same plaintext block→same ciphertext block)
+- The oracle rejected even-length inputs, but this was bypassed by appending a dummy byte
 
-When two guessed bytes are correct, the resulting AES block matches the target block
+  
+**Core idea of the attack:**
+The flag had to be recovered 2 bytes at a time(to check the even bytes too)
+Then we carefully choose padding so that:
+`[PAD][KNOWN_FLAG][UNKNOWN_2_BYTES] = exactly 16 bytes`
+
+When two guessed bytes are **correct**, the resulting AES block matches the target block
 Since AES is deterministic, block equality confirms correct guesses
-Step-by-step logic:
-Start with the known prefix: nite{
-Add padding so that (padding + known_flag + 2 bytes) aligns perfectly to a 16-byte AES block
-Send only padding to the oracle to capture the target ciphertext block
-Brute-force all possible character pairs (~1500 combinations)
-For each guess:
-Send [padding + known_flag + guessed_pair]
-Compare the resulting ciphertext block with the target block
-If blocks match → guessed pair is correct
-Append the correct bytes and repeat until } is found
-The odd-length restriction was bypassed by appending a dummy byte
 
+
+**Step-by-step logic:**
+                                                            Start with the known prefix: `nite{`
+                                                                           |
+                            Add padding so that (padding + known_flag + 2 bytes) aligns perfectly to a 16-byte AES block
+                                                                           |
+                                         Send only padding to the oracle to capture the target ciphertext block
+                                                                           |
+                                                       Brute-force all possible character pairs 
+                                                                           |
+                                                                    For each guess:
+                                                    1.  Send [padding + known_flag + guessed_pair]
+                                            2.  Compare the resulting ciphertext block with the target block
+                                                     3.  If blocks match → guessed pair is correct
+                                                   4. Append the correct bytes and repeat until } is found
+                                            5. The odd-length restriction was bypassed by appending a dummy byte
+
+
+**Python solver script :**
 ```
 from pwn import *
 import string
@@ -631,5 +640,9 @@ nite{D4v1d_B0w13-s_0dds_w3r3_n3v3r_1n_y0ur_f4v0r}
 ```
 
 ## Concepts learnt:
-- 
+- AES is a deterministic block cipher: identical plaintext blocks produce identical ciphertext blocks
+- How block alignment can be abused in encryption oracles
+- Practical implementation of a byte-at-a-time ECB-style attack
+- How input constraints (like odd-length restrictions) can often be           bypassed and exploited instead of blocking attacks
+
   ***
