@@ -16,11 +16,11 @@ From this challenge, I learned:
 - How SPL commands like `stats`, `sort`, and field filtering support investigations
 
 ## My Solve
-I started by querying all web traffic logs and used a timechart to identify a clear spike in activity, which marked the main attack window. 
-I then analysed key fields like `user_agent`, `client_ip`, and `path` and filtered out legitimate browser traffic. This revealed a single attacker IP responsible for all suspicious requests. 
-Tracing this IP chronologically showed reconnaissance attempts targeting sensitive files using payloads such as `/.env`, `/.git`, and `phpinfo.php`, followed by enumeration using path traversal payloads like `../../etc/passwd` and redirect-based probes. 
-The attacker then launched SQL injection attacks using automated tools like **sqlmap** and **Havij**, confirmed by payloads containing `SLEEP(5)` that caused delayed server responses. 
-After exploitation, the attacker attempted to download sensitive archives such as `backup.zip` and `logs.tar.gz`. Finally, successful remote code execution was confirmed through webshell payloads like `shell.php?cmd=./bunnylock.bin`, indicating ransomware staging. 
+I started by querying all web traffic logs and used a timechart to identify a clear spike in activity, which marked the main attack window. </br>
+I then analysed key fields like `user_agent`, `client_ip`, and `path` and filtered out legitimate browser traffic. This revealed a single attacker IP responsible for all suspicious requests. </br>
+Tracing this IP chronologically showed reconnaissance attempts targeting sensitive files using payloads such as `/.env`, `/.git`, and `phpinfo.php`, followed by enumeration using path traversal payloads like `../../etc/passwd` and redirect-based probes. </br>
+The attacker then launched SQL injection attacks using automated tools like **sqlmap** and **Havij**, confirmed by payloads containing `SLEEP(5)` that caused delayed server responses. </br>
+After exploitation, the attacker attempted to download sensitive archives such as `backup.zip` and `logs.tar.gz`. Finally, successful remote code execution was confirmed through webshell payloads like `shell.php?cmd=./bunnylock.bin`, indicating ransomware staging. </br>
 This compromise was validated by pivoting to firewall logs, which showed outbound C2 communication and large data transfers from the compromised server to the attacker IP.
 
 ## Tools Used
