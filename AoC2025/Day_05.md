@@ -27,7 +27,7 @@ By manually changing: `user_id` = `10` → `user_id` = `11` and refreshing the p
 This confirmed a classic IDOR vulnerability.
 To answer the final question, I iterated through different `user_id` values in the same manner and observed the responses returned by the view_accounts endpoint.
 By changing the user_id parameter and refreshing the page, I identified that:
-`user_id` = 15 corresponded to a parent account with 10 children :
+`user_id` = 15 corresponded to a parent account with 10 children :</br>
 <img width="1920" height="1070" alt="Screenshot 2025-12-21 004545" src="https://github.com/user-attachments/assets/a3db6701-f8ee-42ef-be34-644c758cd917" />
 
 ## Tools Used 
