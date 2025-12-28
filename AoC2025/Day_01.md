@@ -28,7 +28,7 @@ Next, I used the find command to search for suspicious files related to `egg` ke
 To further investigate attacker behavior, I switched to the root user using `sudo su` and inspected the root bash history. This revealed commands used to exfiltrate stolen data using curl, confirming the attacker’s presence and intent.
 
 **Terminal Working :**
-```
+```ruby
 cskidy@tbfc-web01:~$ cd Guides
 mcskidy@tbfc-web01:~/Guides$ ls
 mcskidy@tbfc-web01:~/Guides$ ls -la
