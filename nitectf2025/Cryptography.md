@@ -174,7 +174,7 @@ for i in mults:
 ```
 *I used the python code in the solution repository to solve this.*
 *The followig code also works:*
-```
+```ruby
 from pwn import remote
 from Crypto.Util.number import inverse, long_to_bytes
 import json
