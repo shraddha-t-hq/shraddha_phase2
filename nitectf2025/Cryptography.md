@@ -17,7 +17,7 @@ To achieve this, I used the Z3 SMT solver to represent the AES key as symbolic v
 Once all constraints were satisfied, Z3 produced a valid AES key. Using the recovered key, I reconstructed the keystream, decrypted the ciphertext,<br/>
 and extracted the flag from the plaintext.
 
-<br/>
+
 **Python decryption code**
 ```ruby
 from Crypto.Cipher import AES
