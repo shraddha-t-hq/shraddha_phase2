@@ -7,25 +7,26 @@ First step to consruct the flag was to find the attacker IP and ID. This is wher
 <br/>
 <img width="1920" height="1128" alt="Screenshot 2025-12-30 235201" src="https://github.com/user-attachments/assets/9982b614-dc1d-4d21-9562-9d0a59c602f1" />
 
-Attacker SCID was `2457ce19cb87e0eb`
+Attacker SCID was `2457ce19cb87e0eb`<br/>
 Attacker: `192.0.2.66` 
-
-Instead of following the `UDP` stream, I followed the `QUIC` stream, as QUIC reconstructs application-layer data correctly.
-Upon switching the `QUIC` stream view to RAW, I noticed the hexadecimal sequence: `1f 8b 08`
+<br/>
+Instead of following the `UDP` stream, I followed the `QUIC` stream, as QUIC reconstructs application-layer data correctly.<br/>
+Upon switching the `QUIC` stream view to RAW, I noticed the hexadecimal sequence: `1f 8b 08`<br/>
 These bytes correspond to the magic header of a `GZIP` file, indicating that the attacker had transferred a gzip-compressed payload in raw form. 
+<br/>
 <img width="1920" height="1128" alt="Screenshot 2025-12-31 213657" src="https://github.com/user-attachments/assets/38fc4461-853e-46e0-907b-8f65e6aaa9ce" />
 
-**Reconstructing the Payload**
+**Reconstructing the Payload**<br/>
 I copied the raw hexadecimal data starting from the gzip header and saved it into a file named `payload.hex`. Since the data was in hexadecimal form, I converted it back to binary using `xxd`.
 I then verified the file type.
 
-**Extracting the Archive**
+**Extracting the Archive**<br/>
 After decompression, the resulting file turned out to be a `POSIX tar archive`, not plain text. I extracted the archive contents.
 
-**Identifying the Encryption Key**
+**Identifying the Encryption Key**<br/>
 Inspecting the `.env` file revealed an AES key stored as an environment variable. This strongly indicated that the flag was AES-encrypted inside the application logic.
 
-**Decrypting the Flag**
+**Decrypting the Flag**<br/>
 Using the  AES key from .env, I used a small decryption script (decrypt.py) to recover the plaintext flag.
 
 Then I combined all required findings to get the actual flag.
