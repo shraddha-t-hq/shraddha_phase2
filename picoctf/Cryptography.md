@@ -9,14 +9,7 @@ It was required for me to write a code to reverse the encryption, I used gpt to 
 <br/>
 **source code** :
 ```
-#!/usr/bin/env python3
-# decode_flag.py
-# Usage: python3 decode_flag.py
-# Reverses the encryption described in the provided code file and prints the plaintext.
-
 from typing import List
-
-# Given values from flag_info / code
 a = 90
 b = 26
 p = 97
@@ -25,20 +18,13 @@ text_key = "trudeau"
 cipher = [61578, 109472, 437888, 6842, 0, 20526, 129998, 526834, 478940, 287364, 0, 567886, 143682, 34210, 465256, 0, 150524, 588412, 6842, 424204, 164208, 184734, 41052, 41052, 116314, 41052, 177892, 348942, 218944, 335258, 177892, 47894, 82104, 116314]
 
 def compute_shared_key(g: int, a: int, b: int, p: int) -> int:
-    """
-    Compute the Diffie-Hellman shared key (g^(a*b) mod p) in a safe way.
-    Uses pow with modular exponentiation.
-    """
     # faster / safer: compute v = g^b mod p, then key = v^a mod p
     v = pow(g, b, p)
     key = pow(v, a, p)
     return key
 
 def recover_semi_cipher(cipher_list: List[int], shared_key: int) -> str:
-    """
-    From the integer cipher list recover the semi_cipher string where
-    each integer was calculated as: ord(char) * shared_key * 311
-    """
+    
     denom = shared_key * 311
     chars = []
     for idx, c in enumerate(cipher_list):
@@ -95,17 +81,27 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+
+**Terminal working :**
+```
+shraddhatiwari@LAPTOP-F2C51A3F:~$ nano custom.py
+shraddhatiwari@LAPTOP-F2C51A3F:~$ python3 custom.py
+[+] Computed shared_key = 22
+[+] Recovered semi_cipher (raw chars): '\t\x10@\x01\x00\x03\x13MF*\x00S\x15\x05D\x00\x16V\x01>\x18\x1b\x06\x06\x11\x06\x1a3 1\x1a\x07\x0c\x11'
+
+DECODED PLAINTEXT
+picoCTF{custom_d2cr0pt6d_49fbee5b}
+```
 ## Flag:
 ```
-
+picoCTF{custom_d2cr0pt6d_49fbee5b}
 ```
 ## Concepts learnt:
-
-
-## Notes:
-
-## Resources:
-
+- How custom encryption schemes layer multiple simple operations and must be reversed step-by-step in the correct order.
+- Understood the Diffie–Hellman key exchange process and why using small parameters makes it insecure.
+- Linear arithmetic encryption without a modulus is fully reversible and weak.
+- Gained clarity on XOR encryption, including its symmetry and how reversing input order affects decryption.
+- Improved ability to analyze unfamiliar code and reconstruct the original plaintext logically, rather than brute-forcing.
 
 # 2. miniRSA
 
