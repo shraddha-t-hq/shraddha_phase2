@@ -69,8 +69,7 @@ picoCTF{beep_boop_im_in_space}
 # 3. Trivial Flag Transfer Protocol
 
 > Figure out how they moved the flag.
-<br/>> **The challenge demanded that I .**
-
+<br/>> 
 ## Solution:
 I opened the given file using Wireshark and then extracted all the TFTP files. It contained `plan` and `instructions` files with encrypted sentences.
 I used an encryption identifier to identify as a ROT13 encryption. I then decrypted it using the same software. 
