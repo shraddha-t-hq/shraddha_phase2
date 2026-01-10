@@ -132,7 +132,7 @@ nite{thus_sp0k3_th3_n3tw0rk_f0r3ns1cs_4n4lyst}
 
   ***
 
-# 4. Hide and Seek
+# 4. NineTails
 > Looks like I got a little too clever and hid the flag as a password in Firefox, tucked away like one of NineTails’ many tails.
 > Recover the "logins" and the "key4" and let it guide you to the flag.
 > Hint:
